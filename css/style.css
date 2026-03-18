@@ -31,7 +31,7 @@
   --sp-32: 32px;
   --rd-200: 200px;
 
-  --content-max-width: 1320px;
+  --content-max-width: 1440px;
   --page-padding: 60px;
 }
 
@@ -179,7 +179,7 @@ ul {
   z-index: 100;
   width: calc(100% - 120px);
   max-width: 920px;
-  background: rgba(12, 12, 12, 0.65);
+  background: rgba(12, 12, 12, 0.35);
   border: 0.5px solid var(--color-neutral-200);
   border-radius: var(--rd-200);
   padding: 8px var(--sp-16);
@@ -319,7 +319,6 @@ ul {
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: var(--content-max-width);
   opacity: 0;
   transform: translateY(20px);
   pointer-events: none;
@@ -359,17 +358,33 @@ ul {
   display: inline-block;
   opacity: 0;
   transform: translateY(100%);
+  filter: blur(20px);
+  cursor: default;
+  /* Smooth cubic-bezier for the reveal — long and cinematic */
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    font-family 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Revealed state — applied by JS via class toggle */
 .hero__title .char.animate {
-  animation: charReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+  /* Once revealed, switch to snappier transitions for hover interaction */
+  transition:
+    color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    font-family 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes charReveal {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Hover — JS applies inline styles for random values */
+.hero__title .char.animate:hover {
+  filter: blur(0px);
 }
 
 .hero__subtitle {
@@ -409,7 +424,7 @@ ul {
 }
 
 .work__inner {
-  max-width: var(--content-max-width);
+  width: 100%;
   margin: 0 auto;
   padding: 0 var(--page-padding);
 }
@@ -430,33 +445,36 @@ ul {
   position: relative;
 }
 
-/* Sticky panel — stays in viewport while user scrolls through the zone */
+/* Sticky panel — fills zone exactly, uses flexbox to fill height */
 .work__category {
   position: sticky;
   top: 0;
-  height: 100vh;
-  height: 100svh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: stretch;
   background-color: var(--color-surface-bg-secondary);
   overflow: hidden;
 }
 
-/* Max-width inner — top-aligned so no empty space above title */
+/* Max-width inner — stretches to fill available height */
 .work__category__inner {
   width: 100%;
-  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 0 var(--page-padding);
+  padding: 80px var(--page-padding) 32px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: 100%;
+  justify-content: center;
 }
 
 /* Work heading sits flush above the category title in zone 0 */
 .work__category__inner .work__header {
+  margin-top: 64px;
   margin-bottom: 4px;
+  flex-shrink: 0;
 }
 
 .work__skills {
@@ -533,25 +551,30 @@ ul {
   transform: translateX(0);
 }
 
-/* Clip container — hides cards outside the frame */
+/* Clip container — hides cards outside the frame, grows to fill */
 .work__projects-track {
   overflow: hidden;
   width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
-/* Horizontal carousel — translateX driven by scroll position */
+/* Horizontal carousel — transform animated via JS rAF (no CSS transition) */
 .work__projects {
   display: flex;
   flex-direction: row;
   gap: 32px;
   will-change: transform;
-  transition: transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+  height: 100%;
+  align-items: center;
 }
 
 /* Progress indicator dots */
 .work__carousel-dots {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
+  padding-top: 8px;
 }
 
 .work__carousel-dot {
@@ -572,10 +595,11 @@ ul {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  aspect-ratio: 640 / 360;
-  /* ~62% of track width so 1.5 cards are visible — peek effect */
+  aspect-ratio: 16 / 9;
   flex-shrink: 0;
-  width: clamp(260px, 62%, 760px);
+  /* Height-driven: fill most of the track, aspect-ratio computes width */
+  height: min(90%, 520px);
+  width: auto;
   background-color: rgba(217, 217, 217, 0.91);
   cursor: pointer;
   will-change: transform;
@@ -680,7 +704,7 @@ ul {
 }
 
 .connect__inner {
-  max-width: var(--content-max-width);
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -948,6 +972,8 @@ ul {
   .work__category__inner {
     padding: 0 var(--page-padding);
     gap: 20px;
+    height: auto;
+    justify-content: flex-start;
   }
 
   .work__category-title {
@@ -958,15 +984,20 @@ ul {
 
   .work__projects-track {
     overflow: visible;
+    flex: none;
   }
 
   .work__projects {
     flex-direction: column;
     gap: 20px;
+    height: auto;
+    align-items: stretch;
   }
 
   .project-card {
     width: 100%;
+    height: auto;
+    max-height: none;
   }
 
   .work__carousel-dots {
