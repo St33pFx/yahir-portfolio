@@ -36,10 +36,10 @@ function initIntroSequence() {
     { scaleY: 1, duration: 2, ease: 'power3.out', delay: 0.3 }
   );
 
-  // ── Master timeline for other elements — starts 1s in ──
+  // ── Master timeline — starts when bg is ~20% in (0.7s) ──
   const tl = gsap.timeline({
     defaults: { ease: 'power4.out' },
-    delay: 1.0,
+    delay: 0.7,
   });
 
   // 1) Hero elements container fades in
