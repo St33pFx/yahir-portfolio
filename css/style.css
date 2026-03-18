@@ -290,7 +290,7 @@ ul {
   z-index: -1;
 }
 
-/* bg-top SVG — starts above clip boundary, slides down into it */
+/* bg-top SVG — starts above clip boundary, GSAP slides it down */
 .hero__bg {
   position: absolute;
   top: 0;
@@ -301,18 +301,13 @@ ul {
   transform: translateY(-100%);
 }
 
-.hero__bg.animate-in {
-  transform: translateY(0);
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .hero__bg img {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-/* Hero elements — hidden until bg animation completes */
+/* Hero elements — hidden until GSAP timeline reveals them */
 .hero__elements {
   display: flex;
   flex-direction: column;
@@ -325,12 +320,7 @@ ul {
 }
 
 .hero__elements.animate-in {
-  opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
-  transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero__content {
@@ -351,40 +341,21 @@ ul {
   width: 100%;
   letter-spacing: -0.02em;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero__title .char {
   display: inline-block;
   opacity: 0;
-  transform: translateY(100%);
-  filter: blur(20px);
   cursor: default;
-  /* Smooth cubic-bezier for the reveal — long and cinematic */
-  transition:
-    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 1.2s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    font-family 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, filter, opacity;
+  vertical-align: top;
+  transform-origin: center bottom;
 }
 
-/* Revealed state — applied by JS via class toggle */
-.hero__title .char.animate {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0px);
-  /* Once revealed, switch to snappier transitions for hover interaction */
-  transition:
-    color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    font-family 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Hover — JS applies inline styles for random values */
-.hero__title .char.animate:hover {
-  filter: blur(0px);
+/* Hover — filter kept sharp via GSAP, this is a fallback */
+.hero__title .char.revealed:hover {
+  filter: blur(0px) !important;
 }
 
 .hero__subtitle {
@@ -403,11 +374,7 @@ ul {
 }
 
 .hero__subtitle.animate-in {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  pointer-events: auto;
 }
 
 .hero__subtitle span {

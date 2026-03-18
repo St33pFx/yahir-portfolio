@@ -28,29 +28,83 @@ function initIntroSequence() {
 
   splitHeroTitle(heroTitle);
 
-  // 60ms timeout: gives the browser time to paint translateY(-100%)
-  // before the transition fires. More reliable than double-rAF across browsers.
-  setTimeout(() => {
-    heroBg.classList.add('animate-in');
-  }, 60);
+  const chars = heroTitle.querySelectorAll('.char');
 
-  const BG_DUR = 900; // matches CSS transition duration
+  // ── Master timeline ──
+  const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-  setTimeout(() => {
-    navbar.classList.remove('hero-hidden');
-    navbar.classList.add('hero-visible');
-  }, BG_DUR * 0.6);
+  // 1) Background slides in from above
+  tl.fromTo(heroBg,
+    { yPercent: -100 },
+    {
+      yPercent: 0,
+      duration: 1.2,
+      ease: 'power3.inOut',
+    }
+  );
 
-  setTimeout(() => {
-    heroEls.classList.add('animate-in');
-    setTimeout(() => {
-      heroTitle.querySelectorAll('.char').forEach((c, i) => {
-        setTimeout(() => c.classList.add('animate'), i * 70);
-      });
-      const totalCharTime = heroTitle.querySelectorAll('.char').length * 70 + 400;
-      setTimeout(() => heroSub?.classList.add('animate-in'), totalCharTime);
-    }, 100);
-  }, BG_DUR * 0.6 + 200);
+  // 2) Navbar fades in (overlaps with bg by 0.5s)
+  tl.to(navbar, {
+    opacity: 1,
+    y: 0,
+    duration: 0.7,
+    ease: 'power3.out',
+    onStart: () => {
+      navbar.classList.remove('hero-hidden');
+      navbar.classList.add('hero-visible');
+    },
+  }, '-=0.5');
+
+  // 3) Hero elements container fades in
+  tl.to(heroEls, {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: 'power3.out',
+    onStart: () => {
+      heroEls.classList.add('animate-in');
+    },
+  }, '-=0.3');
+
+  // 4) Title chars: staggered bottom→up, blur→sharp
+  tl.fromTo(chars,
+    {
+      y: '110%',
+      opacity: 0,
+      filter: 'blur(22px)',
+    },
+    {
+      y: '0%',
+      opacity: 1,
+      filter: 'blur(0px)',
+      duration: 1.1,
+      stagger: 0.065,
+      ease: 'power4.out',
+      onComplete: () => {
+        heroTitle.style.height = heroTitle.offsetHeight + 'px';
+        chars.forEach(c => c.classList.add('revealed'));
+      },
+    },
+    '-=0.3'
+  );
+
+  // 5) Subtitle fades in after most chars are done
+  tl.fromTo(heroSub,
+    {
+      y: 20,
+      opacity: 0,
+    },
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power3.out',
+      onStart: () => {
+        heroSub?.classList.add('animate-in');
+      },
+    },
+    '>-0.4'
+  );
 }
 
 function splitHeroTitle(title) {
@@ -58,7 +112,7 @@ function splitHeroTitle(title) {
   title.textContent = '';
   title.setAttribute('aria-label', text);
 
-  // Hover fonts pool — mix of contrasting styles
+  // Hover fonts pool
   const hoverFonts = [
     '"Inter", sans-serif',
     '"Georgia", serif',
@@ -71,40 +125,67 @@ function splitHeroTitle(title) {
 
   // Hover colors pool
   const hoverColors = [
-    '#e36085',   // pink
-    '#ff6b6b',   // coral
-    '#ffd93d',   // yellow
-    '#6bcb77',   // green
-    '#4d96ff',   // blue
-    '#ff8e53',   // orange
-    '#c084fc',   // purple
+    '#e36085',
+    '#ff6b6b',
+    '#ffd93d',
+    '#6bcb77',
+    '#4d96ff',
+    '#ff8e53',
+    '#c084fc',
   ];
-
-  const originalFont  = 'Bulevar';
-  const originalColor = '';  // let CSS handle it
 
   text.split('').forEach((char) => {
     const span = document.createElement('span');
     span.className = 'char';
     span.textContent = char === ' ' ? '\u00A0' : char;
 
-    // ── Hover enter ──
+    // Store original color once revealed (grabbed after GSAP reveal completes)
+    let originalColor = null;
+    let hoverTween = null;
+
     span.addEventListener('mouseenter', () => {
+      if (!span.classList.contains('revealed')) return;
+
+      // Capture original color on first hover
+      if (!originalColor) {
+        originalColor = getComputedStyle(span).color;
+      }
+
+      if (hoverTween) hoverTween.kill();
+
       const randFont  = hoverFonts[Math.floor(Math.random() * hoverFonts.length)];
       const randColor = hoverColors[Math.floor(Math.random() * hoverColors.length)];
-      const randRot   = (Math.random() - 0.5) * 24;  // -12° to +12°
-      const randScale = 1.05 + Math.random() * 0.2;   // 1.05 to 1.25
+      const randRot   = (Math.random() - 0.5) * 24;
+      const randScale = 1.05 + Math.random() * 0.2;
 
       span.style.fontFamily = randFont;
-      span.style.color      = randColor;
-      span.style.transform  = `translateY(0) scale(${randScale}) rotate(${randRot}deg)`;
+
+      hoverTween = gsap.to(span, {
+        color: randColor,
+        scale: randScale,
+        rotation: randRot,
+        duration: 0.45,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
     });
 
-    // ── Hover leave ──
     span.addEventListener('mouseleave', () => {
-      span.style.fontFamily = '';
-      span.style.color      = '';
-      span.style.transform  = '';
+      if (!span.classList.contains('revealed')) return;
+
+      if (hoverTween) hoverTween.kill();
+
+      hoverTween = gsap.to(span, {
+        color: originalColor || '#b3f381',
+        scale: 1,
+        rotation: 0,
+        duration: 0.8,
+        ease: 'power3.inOut',
+        overwrite: 'auto',
+        onComplete: () => {
+          span.style.fontFamily = '';
+        },
+      });
     });
 
     title.appendChild(span);
