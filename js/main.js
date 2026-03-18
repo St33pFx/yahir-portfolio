@@ -30,43 +30,30 @@ function initIntroSequence() {
 
   const chars = heroTitle.querySelectorAll('.char');
 
-  // ── Master timeline ──
-  const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-
-  // 1) Background slides in from above
-  tl.fromTo(heroBg,
-    { yPercent: -100 },
-    {
-      yPercent: 0,
-      duration: 1.2,
-      ease: 'power3.inOut',
-    }
+  // bg reveals from top — standalone, exactly like the working test
+  gsap.fromTo(heroBg,
+    { scaleY: 0, transformOrigin: 'top center' },
+    { scaleY: 1, duration: 2, ease: 'power3.out', delay: 0.3 }
   );
 
-  // 2) Navbar fades in (overlaps with bg by 0.5s)
-  tl.to(navbar, {
-    opacity: 1,
-    y: 0,
-    duration: 0.7,
-    ease: 'power3.out',
-    onStart: () => {
-      navbar.classList.remove('hero-hidden');
-      navbar.classList.add('hero-visible');
-    },
-  }, '-=0.5');
+  // ── Master timeline for other elements — starts 1s in ──
+  const tl = gsap.timeline({
+    defaults: { ease: 'power4.out' },
+    delay: 1.0,
+  });
 
-  // 3) Hero elements container fades in
+  // 1) Hero elements container fades in
   tl.to(heroEls, {
     opacity: 1,
     y: 0,
-    duration: 0.6,
+    duration: 0.4,
     ease: 'power3.out',
     onStart: () => {
       heroEls.classList.add('animate-in');
     },
-  }, '-=0.3');
+  });
 
-  // 4) Title chars: staggered bottom→up, blur→sharp
+  // 2) Title chars: staggered bottom→up, blur→sharp
   tl.fromTo(chars,
     {
       y: '110%',
@@ -77,34 +64,70 @@ function initIntroSequence() {
       y: '0%',
       opacity: 1,
       filter: 'blur(0px)',
-      duration: 1.1,
-      stagger: 0.065,
+      duration: 0.9,
+      stagger: 0.045,
       ease: 'power4.out',
       onComplete: () => {
         heroTitle.style.height = heroTitle.offsetHeight + 'px';
         chars.forEach(c => c.classList.add('revealed'));
       },
     },
-    '-=0.3'
+    '-=0.2'
   );
 
-  // 5) Subtitle fades in after most chars are done
-  tl.fromTo(heroSub,
-    {
-      y: 20,
-      opacity: 0,
-    },
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: 'power3.out',
-      onStart: () => {
-        heroSub?.classList.add('animate-in');
+  // 3) Subtitle — split each span into chars and animate staggered
+  const subSpans = heroSub.querySelectorAll('span');
+  subSpans.forEach((span, spanIdx) => {
+    const text = span.textContent.trim();
+    span.textContent = '';
+    span.style.display = 'inline-block';
+    span.style.overflow = 'hidden';
+
+    text.split('').forEach(char => {
+      const el = document.createElement('span');
+      el.style.display = 'inline-block';
+      el.textContent = char === ' ' ? '\u00A0' : char;
+      span.appendChild(el);
+    });
+
+    const subChars = span.querySelectorAll('span');
+
+    // Both spans start while previous is still animating
+    const position = spanIdx === 0 ? '>-0.6' : '>-0.4';
+
+    tl.fromTo(subChars,
+      {
+        y: '-100%',
+        opacity: 0,
+        filter: 'blur(12px)',
       },
+      {
+        y: '0%',
+        opacity: 1,
+        filter: 'blur(0px)',
+        duration: 0.5,
+        stagger: 0.015,
+        ease: 'power3.out',
+      },
+      position
+    );
+  });
+
+  heroSub.style.opacity = '1';
+  heroSub.style.transform = 'translateY(0)';
+
+  // 4) Navbar enters from above
+  gsap.set(navbar, { y: -80, opacity: 0 });
+  tl.to(navbar, {
+    y: 0,
+    opacity: 1,
+    duration: 0.9,
+    ease: 'power3.out',
+    onStart: () => {
+      navbar.classList.remove('hero-hidden');
+      navbar.classList.add('hero-visible');
     },
-    '>-0.4'
-  );
+  }, '>-0.3');
 }
 
 function splitHeroTitle(title) {
