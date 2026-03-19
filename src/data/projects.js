@@ -12,12 +12,12 @@ export const categories = [
     title: 'Motion Graphics',
     projects: [
       {
-        slug: 'kinetic-flow',
-        name: 'Kinetic Flow',
+        slug: 'lastpay',
+        name: 'LastPay',
         year: '2024',
-        tags: ['After Effects', 'Cinema 4D'],
-        image: '/assets/images/motion-01.jpg',
-        video: null,
+        tags: ['After Effects', 'Davinci Resolve'], // ← ajusta tags
+        image: null,
+        video: '/assets/videos/motion-01.mp4',
         caseStudy: makeStudy(
           'A motion-driven visual built around kinetic typography and fluid transitions designed to hold attention from the first frame.',
           'Create a fast-paced, visually engaging animation that delivers maximum impact within the first three seconds.',
@@ -28,28 +28,28 @@ export const categories = [
         ),
       },
       {
-        slug: 'pulse-wave',
-        name: 'Pulse Wave',
+        slug: 'wagmi-markets',
+        name: 'Wagmi Markets',
         year: '2024',
-        tags: ['After Effects', 'Blender'],
-        image: '/assets/images/motion-02.jpg',
-        video: null,
+        tags: ['After Effects', 'Davinci Resolve'],
+        image: null,
+        video: '/assets/videos/motion-02.mp4',
         caseStudy: makeStudy(
           'An audio-reactive animation built around oscillating forms and frequency-driven motion.',
           'Translate raw audio energy into a visual language that feels physical and immersive.',
           'Studied waveform data to define movement arcs, so every pulse felt earned rather than random.',
-          'Blender handled the 3D wave geometry; After Effects composited the glow, grain, and type layers.',
+          'After Effects composited the glow, grain, and type layers.',
           'Slow build-up to a sharp climax — tension and release mirrored the audio curve precisely.',
           'Audio-reactive design rewards patience: the more carefully you map sound to motion, the more visceral the result.',
         ),
       },
       {
-        slug: 'neon-drift',
-        name: 'Neon Drift',
+        slug: 'sellhub',
+        name: 'SellHub',
         year: '2023',
         tags: ['After Effects', 'Illustrator'],
-        image: '/assets/images/motion-03.jpg',
-        video: null,
+        image: null,
+        video: '/assets/videos/motion-03.mp4',
         caseStudy: makeStudy(
           'A neon-soaked loop built for social content with an urban, night-time aesthetic.',
           'Design a seamlessly looping animation optimised for mobile-first social feeds.',
@@ -60,12 +60,12 @@ export const categories = [
         ),
       },
       {
-        slug: 'orbit-loop',
-        name: 'Orbit Loop',
+        slug: 'screw-valley-bot',
+        name: 'Screw Valley Bot',
         year: '2024',
         tags: ['Cinema 4D', 'Redshift'],
-        image: '/assets/images/motion-04.jpg',
-        video: null,
+        image: null,
+        video: '/assets/videos/motion-04.mp4',
         caseStudy: makeStudy(
           'A 3D looping motion piece exploring planetary motion, scale, and light.',
           'Create a mesmerising loop that could work as an ambient screen or a premium social asset.',
@@ -76,12 +76,12 @@ export const categories = [
         ),
       },
       {
-        slug: 'liquid-type',
-        name: 'Liquid Type',
+        slug: 'valleyhub',
+        name: 'ValleyHub',
         year: '2023',
         tags: ['After Effects', 'Photoshop'],
-        image: '/assets/images/motion-05.jpg',
-        video: null,
+        image: null,
+        video: '/assets/videos/motion-05.mp4',
         caseStudy: makeStudy(
           'A typographic experiment exploring fluid, organic motion applied to letterforms.',
           'Push type beyond its static form — make each character feel like it has weight and surface tension.',
@@ -92,12 +92,12 @@ export const categories = [
         ),
       },
       {
-        slug: 'fractal-burst',
-        name: 'Fractal Burst',
+        slug: 'hyperclaw-io',
+        name: 'HyperClaw.Io',
         year: '2023',
         tags: ['Blender', 'After Effects'],
-        image: '/assets/images/motion-06.jpg',
-        video: null,
+        image: null,
+        video: '/assets/videos/motion-06.mp4',
         caseStudy: makeStudy(
           'A generative, fractal-driven explosion sequence blending 3D simulation with 2D compositing.',
           'Build a high-energy reveal that feels chaotic but is fully controlled and reproducible.',
@@ -113,319 +113,291 @@ export const categories = [
     id: '3d-art',
     title: '3D Art',
     projects: [
+      // ─── Proyecto 1 — carpeta 3d-01 ───────────────────────────────────
       {
-        slug: 'crystal-form',
-        name: 'Crystal Form',
+        slug: 'color-study',
+        name: 'Color Study', // ← cambia al nombre real
         year: '2024',
-        tags: ['Blender', 'Substance'],
-        image: '/assets/images/3d-01.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A still-life study of crystalline structures exploring light refraction, translucency, and surface imperfection.',
-          'Achieve photorealistic gemstone rendering that still feels intentionally artistic rather than purely technical.',
-          'References from mineralogy photography and high-end product shots guided the composition and lighting setup.',
-          'Modelled procedurally in Blender with Substance Painter texturing for micro-detail surface breakup.',
-          'Multiple render passes composited in post to control refraction intensity and add subtle atmospheric haze.',
-          'Realism in 3D is about imperfection — adding noise, dust, and micro-scratches is what sells the illusion.',
-        ),
+        tags: ['Cinema 4D', 'Redshift'], // ← ajusta tags
+        image: '/assets/images/3d-01/YellowOptimizada.jpg',
+        video: '/assets/videos/3d-01/3d-01.mp4',
+        caseStudy: {
+          overview:
+            'Un estudio de materiales y luz que explora la relación entre color, textura y render fotorrealista.',
+          goal: 'Dominar el pipeline de materiales PBR y explorar cómo el color define la percepción de la forma.',
+          process: {
+            concept:
+              'Referencia en fotografía de producto y packaging de lujo para guiar la paleta y la composición.',
+            execution:
+              'Modelado y materiales en Cinema 4D con Redshift para el render físicamente correcto.',
+            motion:
+              'Iluminación de tres puntos con un área de luz principal para simular luz de estudio.',
+          },
+          gallery: [
+            '/assets/images/3d-01/BlueOptimized.jpg',
+            '/assets/images/3d-01/WhitePNGNoOptimized.png',
+            '/assets/images/3d-01/YellowOptimizada.jpg',
+          ],
+          takeaway:
+            'El color no es decoración — define materiales, profundidad y emoción en la misma medida que la forma.',
+        },
       },
+      // ─── Proyecto 2 — carpeta 3d-02 ───────────────────────────────────
+      {
+        slug: 'render-series',
+        name: 'Render Series', // ← cambia al nombre real
+        year: '2024',
+        tags: ['Blender', 'Cycles'], // ← ajusta tags
+        image: '/assets/images/3d-02/RenderUno.png',
+        video: '/assets/videos/3d-02/Turn Lapida 2.mp4',
+        caseStudy: {
+          overview:
+            'Serie de renders explorativos que documentan el proceso de refinamiento de una pieza 3D.',
+          goal: 'Entender cómo pequeños cambios de cámara, luz y material transforman completamente la lectura de un objeto.',
+          process: {
+            concept:
+              'Cada render responde a una pregunta específica sobre luz, ángulo o material.',
+            execution:
+              'Pipeline en Blender con Cycles; cada variante exportada como pase independiente.',
+            motion:
+              'Sin animación — el movimiento ocurre entre renders, como frames de una historia.',
+          },
+          gallery: [
+            '/assets/images/3d-02/RenderUno.png',
+            '/assets/images/3d-02/Rende.png',
+            '/assets/images/3d-02/Rende2.png',
+            '/assets/images/3d-02/Rende3.png',
+            '/assets/images/3d-02/Rende4.png',
+          ],
+          takeaway:
+            'Iterar con propósito es más valioso que iterar por volumen. Cada variante debe responder una pregunta.',
+        },
+      },
+      // ─── Proyecto 3 — carpeta 3d-03 ───────────────────────────────────
+      {
+        slug: 'room-render',
+        name: 'Room Render', // ← cambia al nombre real
+        year: '2024',
+        tags: ['Blender', 'Cycles'], // ← ajusta tags
+        image: '/assets/images/3d-03/RoomRenderDay.png',
+        video: null,
+        caseStudy: {
+          overview:
+            'Visualización de un espacio interior que combina luz natural, materiales orgánicos y arquitectura minimalista.',
+          goal: 'Crear un ambiente que transmita calma y calidez a través de la luz y los materiales, sin recurrir a decoración excesiva.',
+          process: {
+            concept:
+              'Inspirado en fotografía de arquitectura escandinava — espacio limpio, luz suave, texturas naturales.',
+            execution:
+              'Escena en Blender con HDRI exterior para la iluminación global y materiales procedurales.',
+            motion:
+              'Cámara posicionada para maximizar las líneas de perspectiva y la entrada de luz.',
+          },
+          gallery: [
+            '/assets/images/3d-03/RoomRenderDay.png',
+            '/assets/images/3d-03/2ChairDay.png',
+            '/assets/images/3d-03/Cuadrito.png',
+            '/assets/images/3d-03/MArble.png',
+          ],
+          takeaway:
+            'El espacio vacío es tan importante como los objetos. Saber cuándo no agregar es la decisión más difícil.',
+        },
+      },
+      // ─── Proyecto 4 — carpeta 3d- ──────────────────────────────────────
+      {
+        slug: 'abstract-series',
+        name: 'Abstract Series', // ← cambia al nombre real
+        year: '2023',
+        tags: ['Cinema 4D', 'Redshift'], // ← ajusta tags
+        image: '/assets/images/3d-/image.png',
+        video: '/assets/videos/3d-/1.mp4',
+        caseStudy: {
+          overview:
+            'Exploración abstracta de forma y espacio generada a través de múltiples ángulos y variaciones.',
+          goal: 'Definir un lenguaje visual propio a través de la experimentación libre, sin restricciones de cliente o brief.',
+          process: {
+            concept:
+              'Sin referencia externa — forma pura derivada de la manipulación directa de la geometría.',
+            execution:
+              'Cinema 4D para modelado paramétrico; Redshift para el tratamiento de luz y material.',
+            motion:
+              'Las variaciones se presentan como secuencia, creando una narrativa visual de evolución.',
+          },
+          gallery: [
+            '/assets/images/3d-/image.png',
+            '/assets/images/3d-/2.png',
+            '/assets/images/3d-/3.png',
+            '/assets/images/3d-/4.png',
+            '/assets/images/3d-/5.png',
+          ],
+          takeaway:
+            'La exploración sin objetivo produce los descubrimientos más honestos.',
+        },
+      },
+      // ─── Proyecto 5 — MonitoC4D ────────────────────────────────────────
+      {
+        slug: 'monitor-c4d',
+        name: 'Monitor C4D', // ← cambia al nombre real
+        year: '2023',
+        tags: ['Cinema 4D'], // ← ajusta tags
+        image: '/assets/images/MonitoC4D.png',
+        video: null,
+        caseStudy: {
+          overview:
+            'Modelado y render de producto de alta fidelidad de un monitor en Cinema 4D.',
+          goal: 'Practicar el pipeline completo de modelado hard-surface, UVs y render de producto.',
+          process: {
+            concept:
+              'Referencia directa del objeto real para asegurar proporciones y detalles correctos.',
+            execution:
+              'Modelado poligonal en Cinema 4D con atención a los bordes y la geometría de soporte.',
+            motion:
+              'Iluminación de estudio con fondo degradado para resaltar la forma del producto.',
+          },
+          gallery: ['/assets/images/MonitoC4D.png'],
+          takeaway:
+            'El modelado de producto enseña precisión — cada milímetro incorrecto destruye la credibilidad del render.',
+        },
+      },
+      // ─── Proyecto 6 — placeholder (agrega tu propio) ──────────────────
       {
         slug: 'hollow-shell',
-        name: 'Hollow Shell',
-        year: '2024',
-        tags: ['ZBrush', 'Maya'],
-        image: '/assets/images/3d-02.jpg',
+        name: 'Coming Soon', // ← reemplaza con tu próximo proyecto
+        year: '2025',
+        tags: ['TBD'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'A character study — an abandoned exoskeleton fragment, worn and eroded, hinting at a larger narrative.',
-          'Create a high-detail hero asset that tells a story purely through form, surface, and material.',
-          'Concept sketches explored the tension between industrial precision and organic decay — both had to coexist.',
-          'Sculpted in ZBrush at 40M polygons, retopologised in Maya, with a full PBR material pipeline in Substance Painter.',
-          'Turntable animation timed to reveal the most damaged areas last, building narrative tension as it rotates.',
-          'Every dent and scratch is a design decision. Props tell stories only if every detail is intentional.',
-        ),
-      },
-      {
-        slug: 'terrain-study',
-        name: 'Terrain Study',
-        year: '2023',
-        tags: ['Blender', 'World Machine'],
-        image: '/assets/images/3d-03.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A large-scale procedural landscape built to test physically-based atmospheric rendering and macro composition.',
-          'Generate a terrain that evokes a specific emotion — isolated, vast, and quietly dramatic.',
-          'Mood references from landscape photographers like Ansel Adams and Sebastião Salgado informed the tonal palette.',
-          'World Machine generated the base heightmap; Blender handled scattering, shading, and volumetric atmosphere.',
-          'Camera moves through the scene in slow arcs — no cuts, no rush — letting scale register gradually.',
-          'Scale is not just size. It is the relationship between the camera, the subject, and the empty space around them.',
-        ),
-      },
-      {
-        slug: 'mech-suit',
-        name: 'Mech Suit',
-        year: '2024',
-        tags: ['Maya', 'Substance Painter'],
-        image: '/assets/images/3d-04.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A hard-surface mech design combining modular armour plating with exposed mechanical internals.',
-          'Design a believable functional machine — every part should look like it serves a structural or mechanical purpose.',
-          'Researched real industrial machinery and military vehicle design to ground the sci-fi aesthetic in plausible engineering.',
-          'Modelled in Maya with a strict naming and UV convention for pipeline compatibility; Substance Painter for weathering passes.',
-          'Hero shots lit with a three-point cinematic rig emphasising the silhouette and the most complex mechanical areas.',
-          'Functional design constraints produce better fictional designs than pure aesthetic invention.',
-        ),
-      },
-      {
-        slug: 'abstract-core',
-        name: 'Abstract Core',
-        year: '2023',
-        tags: ['Blender', 'Octane'],
-        image: '/assets/images/3d-05.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A purely abstract sculptural form rendered with unbiased path tracing to explore subsurface scattering and volumetrics.',
-          'Create an image that lives between sculpture, photography, and CGI — ambiguous and compelling.',
-          'Started with no brief — explored Blender sculpting tools freely until a form appeared that felt worth developing.',
-          'Octane rendered the SSS-heavy material with volumetric light fog; composited colour grading pushed the mood further.',
-          'Static frame — no animation. Composition and light do all the work.',
-          'Sometimes the best brief is no brief. Pure exploration produces the most honest creative work.',
-        ),
-      },
-      {
-        slug: 'organic-flow',
-        name: 'Organic Flow',
-        year: '2023',
-        tags: ['ZBrush', 'KeyShot'],
-        image: '/assets/images/3d-06.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A biomorphic sculpture study exploring how organic growth patterns translate into 3D form.',
-          'Build a piece that feels grown rather than modelled — natural, asymmetric, but somehow balanced.',
-          'Referenced coral formations, bone structure, and mycelium networks as source geometry logic.',
-          'Sculpted entirely freehand in ZBrush using DynaMesh and ZRemesher; KeyShot for final photographic rendering.',
-          'Slow rotation rendered at 240fps and slowed to 24fps — subtle motion reveals surface complexity that stills cannot.',
-          'Nature has solved most design problems already. Looking at biology first almost always improves the work.',
-        ),
+        caseStudy: {
+          overview: 'Próximo proyecto en desarrollo.',
+          goal: '',
+          process: { concept: '', execution: '', motion: '' },
+          gallery: [],
+          takeaway: '',
+        },
       },
     ],
   },
+  // ── Sección Web — agrega tus proyectos cuando los tengas ──────────────
   {
     id: 'web',
     title: 'Web',
     projects: [
       {
         slug: 'folio-2025',
-        name: 'Folio 2025',
+        name: 'Folio 2025', // ← este mismo portafolio
         year: '2025',
-        tags: ['React', 'Three.js'],
-        image: '/assets/images/web-01.jpg',
+        tags: ['React', 'GSAP'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'This very portfolio — a full-stack creative development project merging motion design principles with modern web engineering.',
-          'Build a web experience that communicates the intersection of design and code, not just a list of projects.',
-          'Studied Awwwards, Dribbble, and creative developer portfolios to identify patterns worth keeping and ones worth breaking.',
-          'React + Vite for architecture, GSAP for all animation orchestration, Three.js for 3D canvas elements, and custom scroll logic.',
-          'Every transition was mapped on paper before code. Timing curves were iterated in isolation before integration.',
-          'A portfolio is a product. It deserves the same rigour as any client project.',
-        ),
+        caseStudy: {
+          overview:
+            'Este mismo portafolio — un proyecto de desarrollo creativo que fusiona principios de motion design con ingeniería web moderna.',
+          goal: 'Construir una experiencia web que comunique la intersección entre diseño y código, no solo una lista de proyectos.',
+          process: {
+            concept:
+              'Estudié Awwwards y portafolios de creative developers para identificar patrones que vale la pena conservar y otros que vale la pena romper.',
+            execution:
+              'React + Vite para la arquitectura, GSAP para toda la orquestación de animaciones y lógica de scroll personalizada.',
+            motion:
+              'Cada transición fue trazada en papel antes de escribir código. Las curvas de timing se iteraron de forma aislada antes de integrarlas.',
+          },
+          gallery: [],
+          takeaway:
+            'Un portafolio es un producto. Merece el mismo rigor que cualquier proyecto de cliente.',
+        },
       },
       {
-        slug: 'brand-hub',
-        name: 'Brand Hub',
-        year: '2024',
-        tags: ['Next.js', 'Figma'],
-        image: '/assets/images/web-02.jpg',
+        slug: 'web-02',
+        name: 'Próximo Proyecto', // ← reemplaza con tu proyecto web
+        year: '2025',
+        tags: ['TBD'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'A brand asset management platform — clean, fast, and designed for non-technical teams to use daily.',
-          'Replace a cluttered internal tool with something so intuitive it requires zero onboarding.',
-          'Ran user interviews to identify the three actions teams performed 80% of the time, then designed around those exclusively.',
-          'Next.js App Router with a Figma-to-code design system, optimistic UI updates, and zero-loading-state file previews.',
-          'Micro-interactions on every state change — hover, focus, upload, error — to signal responsiveness without disrupting flow.',
-          'Simplicity is the hardest thing to build. Every removed element was a deliberate decision, not an oversight.',
-        ),
+        caseStudy: {
+          overview: '',
+          goal: '',
+          process: { concept: '', execution: '', motion: '' },
+          gallery: [],
+          takeaway: '',
+        },
       },
       {
-        slug: 'dashboard-ui',
-        name: 'Dashboard UI',
-        year: '2024',
-        tags: ['Vue', 'Tailwind'],
-        image: '/assets/images/web-03.jpg',
+        slug: 'web-03',
+        name: 'Próximo Proyecto',
+        year: '2025',
+        tags: ['TBD'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'A data-dense analytics dashboard designed to surface critical metrics without overwhelming the viewer.',
-          'Make complex data readable at a glance — reduce cognitive load while preserving information density.',
-          'Information hierarchy research guided which metrics were promoted to primary visibility and which were buried in drill-downs.',
-          'Vue 3 Composition API with Tailwind for utility-first styling; chart library customised heavily to match the design language.',
-          'Subtle entrance animations on data load signal freshness without distracting from the numbers.',
-          'Dense UIs are not about fitting more in — they are about making everything that is there easier to process.',
-        ),
+        caseStudy: {
+          overview: '',
+          goal: '',
+          process: { concept: '', execution: '', motion: '' },
+          gallery: [],
+          takeaway: '',
+        },
       },
       {
-        slug: 'e-shop',
-        name: 'E-Shop',
-        year: '2023',
-        tags: ['Shopify', 'Liquid'],
-        image: '/assets/images/web-04.jpg',
+        slug: 'web-04',
+        name: 'Próximo Proyecto',
+        year: '2025',
+        tags: ['TBD'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'A premium Shopify storefront for an independent fashion label — conversion-focused but aesthetically uncompromising.',
-          'Build a shopping experience that matches the brand\'s editorial identity without sacrificing conversion fundamentals.',
-          'Audited competitor stores and identified friction points; mapped the purchase funnel before writing a single line of Liquid.',
-          'Custom Shopify theme built from scratch in Liquid + vanilla JS; no page builder, full control over performance.',
-          'Product image transitions and cart interactions were prototyped in Figma first, then translated to CSS/JS exactly.',
-          'Commerce UX is about trust. Every design decision either builds it or erodes it.',
-        ),
+        caseStudy: {
+          overview: '',
+          goal: '',
+          process: { concept: '', execution: '', motion: '' },
+          gallery: [],
+          takeaway: '',
+        },
       },
       {
-        slug: 'studio-site',
-        name: 'Studio Site',
-        year: '2024',
-        tags: ['HTML/CSS', 'GSAP'],
-        image: '/assets/images/web-05.jpg',
+        slug: 'web-05',
+        name: 'Próximo Proyecto',
+        year: '2025',
+        tags: ['TBD'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'A marketing site for a boutique creative studio — type-led, animation-forward, and deliberately minimal.',
-          'Let the work speak. The site\'s job is to create the right atmosphere, not compete with the portfolio pieces.',
-          'Stripped the brief down to three questions: who are they, what do they do, how do you hire them — and answered each once.',
-          'Pure HTML/CSS/JS with GSAP for scroll-driven animations; no framework overhead, sub-second load times.',
-          'Page transitions built with GSAP timeline overlays — entering and leaving pages feel like turning pages in a book.',
-          'Performance and aesthetics are not at odds. Constraints often produce the most refined creative solutions.',
-        ),
+        caseStudy: {
+          overview: '',
+          goal: '',
+          process: { concept: '', execution: '', motion: '' },
+          gallery: [],
+          takeaway: '',
+        },
       },
       {
-        slug: 'api-docs',
-        name: 'API Docs',
-        year: '2023',
-        tags: ['Astro', 'MDX'],
-        image: '/assets/images/web-06.jpg',
+        slug: 'web-06',
+        name: 'Próximo Proyecto',
+        year: '2025',
+        tags: ['TBD'],
+        image: null,
         video: null,
-        caseStudy: makeStudy(
-          'A developer documentation site that treats technical writing as a design problem.',
-          'Make documentation that developers actually want to read — clear navigation, beautiful code blocks, fast search.',
-          'Interviewed five developers about their documentation frustrations; three themes emerged and shaped every structural decision.',
-          'Astro for static generation, MDX for content authoring, custom syntax highlighting theme matching the brand palette.',
-          'No scroll animations — developers need to move fast. Interactions are limited to hover states and smooth anchor transitions.',
-          'Good documentation is invisible. When developers stop noticing the site and focus only on the content, the design has succeeded.',
-        ),
-      },
-    ],
-  },
-  {
-    id: 'game-development',
-    title: 'Game Development',
-    projects: [
-      {
-        slug: 'void-runner',
-        name: 'Void Runner',
-        year: '2024',
-        tags: ['Unity', 'C#'],
-        image: '/assets/images/game-01.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'An infinite runner set in deep space — procedural generation, physics-driven movement, and a hypnotic feedback loop.',
-          'Create a game that is instantly playable but takes hours to master — accessible entry, deep skill ceiling.',
-          'Analysed Geometry Dash and Alto\'s Odyssey for their core loop structures; identified the balance between momentum and challenge.',
-          'Unity with a custom C# procedural generation system; shader graph for the depth-of-field space tunnel effect.',
-          'Every death animation was designed to feel like your fault, not the game\'s — fair failure states keep players coming back.',
-          'Game feel is 80% audio and screen shake. Get the feedback right and players will forgive most other shortcomings.',
-        ),
-      },
-      {
-        slug: 'hex-tactics',
-        name: 'Hex Tactics',
-        year: '2024',
-        tags: ['Unreal Engine', 'Blueprint'],
-        image: '/assets/images/game-02.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A turn-based strategy prototype on a hexagonal grid — fog of war, unit abilities, and asymmetric faction design.',
-          'Build a strategy system that rewards deep thinking without requiring an instruction manual.',
-          'Playtested with twelve people across three sessions; removed half the planned mechanics based on their confusion points.',
-          'Unreal Engine 5 with Blueprint logic for all game systems; procedural map generation using Perlin noise.',
-          'UI transitions use the same hexagonal motif as the game grid — interface and gameplay share a visual language.',
-          'Clarity is a mechanic. If a player cannot immediately understand what is happening, the design has failed.',
-        ),
-      },
-      {
-        slug: 'pixel-quest',
-        name: 'Pixel Quest',
-        year: '2023',
-        tags: ['Godot', 'GDScript'],
-        image: '/assets/images/game-03.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A pixel-art RPG demo exploring narrative branching and consequence-driven world design.',
-          'Tell a meaningful short story in under two hours of gameplay — every choice should matter.',
-          'Story structure borrowed from tabletop RPG design rather than traditional video game narrative frameworks.',
-          'Godot 4 for the engine; all pixel art drawn at 16×16 unit scale; GDScript for all dialogue and event systems.',
-          'Scene transitions use a custom shader dissolve effect that thematically echoes the game\'s memory-and-time motifs.',
-          'Constraints are narrative tools. A limited palette and tile size force creative problem solving that larger canvases never demand.',
-        ),
-      },
-      {
-        slug: 'drift-arena',
-        name: 'Drift Arena',
-        year: '2024',
-        tags: ['Unity', 'Blender'],
-        image: '/assets/images/game-04.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A top-down arcade drifting game where momentum mastery is the primary skill expression.',
-          'Make drifting feel as satisfying as it looks — physics-based, visceral, and immediately readable.',
-          'Spent a week tuning only the car physics before touching any other system — feel first, features second.',
-          'Unity for the game engine with a custom physics layer; all vehicle and track assets modelled in Blender.',
-          'Particle systems and screen-space distortion effects tied directly to velocity and drift angle for real-time feedback.',
-          'Juiciness is not decoration. Every particle, every screen shake, every sound is communicating something to the player.',
-        ),
-      },
-      {
-        slug: 'shadow-realm',
-        name: 'Shadow Realm',
-        year: '2024',
-        tags: ['Unreal Engine', 'Houdini'],
-        image: '/assets/images/game-05.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A first-person horror demo built around procedural audio reactivity and dynamic shadow puppetry as a core mechanic.',
-          'Make darkness feel like a tangible material — something that moves, reacts, and has intent.',
-          'Researched how horror games use sound and absence-of-visuals to create dread rather than jump scares.',
-          'Unreal Engine 5 with Lumen for real-time global illumination; Houdini procedural shadow mesh generation baked as flipbooks.',
-          'Footstep audio mixed dynamically based on surface type, movement speed, and proximity to "entities" — audio tells the story.',
-          'Horror is about uncertainty. The most frightening thing is never what is shown but what the player imagines.',
-        ),
-      },
-      {
-        slug: 'neon-grid',
-        name: 'Neon Grid',
-        year: '2023',
-        tags: ['Unity', 'Shader Graph'],
-        image: '/assets/images/game-06.jpg',
-        video: null,
-        caseStudy: makeStudy(
-          'A puzzle game built entirely around a shader-driven neon grid aesthetic — every visual element is a shader, not a texture.',
-          'Prove that an entire game\'s visual language can be defined by shaders alone — no traditional art assets.',
-          'Studied retrowave aesthetics and vector graphic systems to define a shader vocabulary that could express the full game world.',
-          'Unity with a comprehensive Shader Graph library covering grids, glows, scanlines, and geometry manipulation.',
-          'Puzzle elements animate using shader parameters rather than traditional animation curves — smooth, GPU-driven, zero GC.',
-          'Artistic constraints breed creative solutions. Shaders-only forced innovations that a traditional art pipeline never would.',
-        ),
+        caseStudy: {
+          overview: '',
+          goal: '',
+          process: { concept: '', execution: '', motion: '' },
+          gallery: [],
+          takeaway: '',
+        },
       },
     ],
   },
 ];
 
 export function getAllProjects() {
-  return categories.flatMap(cat =>
-    cat.projects.map(p => ({ ...p, category: cat.title, categoryId: cat.id }))
+  return categories.flatMap((cat) =>
+    cat.projects.map((p) => ({
+      ...p,
+      category: cat.title,
+      categoryId: cat.id,
+    })),
   );
 }
 
 export function getProjectBySlug(slug) {
   for (const cat of categories) {
-    const project = cat.projects.find(p => p.slug === slug);
+    const project = cat.projects.find((p) => p.slug === slug);
     if (project) return { ...project, category: cat.title, categoryId: cat.id };
   }
   return null;
@@ -433,7 +405,7 @@ export function getProjectBySlug(slug) {
 
 export function getAdjacentProjects(slug) {
   const all = getAllProjects();
-  const idx = all.findIndex(p => p.slug === slug);
+  const idx = all.findIndex((p) => p.slug === slug);
   return {
     prev: idx > 0 ? all[idx - 1] : null,
     next: idx < all.length - 1 ? all[idx + 1] : null,

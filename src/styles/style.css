@@ -1,4 +1,26 @@
 /* ═══════════════════════════════════════════
+   TEXT SELECTION — context-aware colors
+   ═══════════════════════════════════════════ */
+
+/* Dark sections: green highlight */
+::selection {
+  background: #b3f381;
+  color: #0c0c0c;
+}
+
+/* Light sections (Work): pink highlight */
+.work ::selection {
+  background: #e36085;
+  color: #fff;
+}
+
+/* Case study (mostly dark): green */
+.cs ::selection {
+  background: #b3f381;
+  color: #0c0c0c;
+}
+
+/* ═══════════════════════════════════════════
    DESIGN TOKENS from Figma Variables
    ═══════════════════════════════════════════ */
 :root {
@@ -674,23 +696,39 @@ ul {
   text-decoration: none;
 }
 
-/* Media — video or image */
+/* Media wrapper — stacks image + video on top of each other */
+.project-card__media-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Shared media styles */
 .project-card__media {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .project-card:hover .project-card__media {
   transform: scale(1.05);
 }
 
+/* Empty placeholder when no video/image */
+.project-card__media--empty {
+  background: #1a1a1a;
+}
+
 /* Dark overlay on hover */
 .project-card__hover-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: rgba(0, 0, 0, 0.45);
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -707,6 +745,7 @@ ul {
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 2;
   padding: clamp(16px, 2.5vw, 28px) clamp(16px, 2.5vw, 28px) clamp(20px, 3vw, 32px);
   background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, transparent 100%);
   display: flex;
@@ -1145,6 +1184,74 @@ ul {
 
 .cs__back-home:hover {
   opacity: 0.7;
+}
+
+/* ── HD Video Modal ──────────────────────────────────────────── */
+.cs__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9900;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: modal-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cs__modal-video {
+  width: 100%;
+  max-width: 1280px;
+  max-height: 80vh;
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  background: #000;
+}
+
+.cs__modal-close {
+  position: fixed;
+  top: 24px;
+  right: 28px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.cs__modal-close:hover {
+  background: rgba(255,255,255,0.16);
+}
+
+.cs__modal-hint {
+  margin-top: 16px;
+  font-family: 'N27', sans-serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+}
+
+.cs__modal-hint code {
+  color: var(--color-text-heading-green);
+  font-family: monospace;
 }
 
 /* ═══════════════════════════════════════════
@@ -1974,32 +2081,121 @@ ul {
 /* ═══════════════════════════════════════════
    CUSTOM CURSOR
    ═══════════════════════════════════════════ */
-.custom-cursor {
-  width: 16px;
-  height: 16px;
+/* ── Cursor: hide native on interactive targets ─────────────── */
+.project-card,
+.cs__hero-media,
+.cs__hero-video {
+  cursor: none !important;
+}
+
+/* ── Small dot — green stroke, no fill ──────────────────────── */
+.cc-dot {
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: transparent;
-  border: 1.5px solid var(--color-text-heading-green);
+  border: 1.5px solid #b3f381;
   position: fixed;
   top: 0;
   left: 0;
   pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
+  z-index: 10001;
   transition:
-    width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    margin 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    border-width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    width       0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    height      0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    margin      0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity     0.25s ease;
 }
 
-.custom-cursor.hovering {
-  width: 48px;
-  height: 48px;
-  margin-left: -16px;
-  margin-top: -16px;
+.cc-dot.hovering {
+  width: 44px;
+  height: 44px;
+  margin-left: -15px;
+  margin-top: -15px;
   border-width: 2px;
+}
+
+.cc-dot[data-mode="click"],
+.cc-dot[data-mode="play"] {
+  opacity: 0;
+}
+
+/* ── Glass bubble (real backdrop-filter glass) ───────────────── */
+.cc-glass {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  overflow: hidden;
+
+  /* Real glass: blurs + saturates whatever is behind in the DOM */
+  backdrop-filter: blur(8px) saturate(1.4) brightness(1.05) contrast(1.05);
+  -webkit-backdrop-filter: blur(8px) saturate(1.4) brightness(1.05) contrast(1.05);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    inset 0 0 24px rgba(255, 255, 255, 0.04),
+    0 4px 24px rgba(0, 0, 0, 0.12);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    scale   0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cc-glass[data-mode="click"],
+.cc-glass[data-mode="play"] {
+  opacity: 1;
+  scale: 1;
+}
+
+/* ── Labels inside glass ─────────────────────────────────────── */
+.cc-glass__label {
+  position: absolute;
+  font-family: 'N27', sans-serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cc-glass[data-mode="click"] .cc-glass__label--click,
+.cc-glass[data-mode="play"]  .cc-glass__label--play {
+  opacity: 1;
+}
+
+/* ── Chromatic aberration — colored edge rings ───────────────── */
+.cc-glass__ca {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cc-glass__ca--r {
+  border: 1.5px solid rgba(255, 60, 90, 0.35);
+  transform: translate(-1.5px, -0.5px);
+  mix-blend-mode: screen;
+}
+
+.cc-glass__ca--b {
+  border: 1.5px solid rgba(60, 180, 255, 0.35);
+  transform: translate(1.5px, 0.5px);
+  mix-blend-mode: screen;
 }
 
 /* ═══════════════════════════════════════════
@@ -2328,8 +2524,16 @@ ul {
     gap: 24px;
   }
 
-  .custom-cursor {
+  .custom-cursor,
+  .cc-dot,
+  .cc-glass {
     display: none;
+  }
+
+  .project-card,
+  .cs__hero-media,
+  .cs__hero-video {
+    cursor: pointer !important;
   }
 }
 

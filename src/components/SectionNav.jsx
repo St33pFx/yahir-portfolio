@@ -5,7 +5,6 @@ const SECTIONS = [
   { label: 'Motion',     zone: 0 },
   { label: '3D Art',     zone: 1 },
   { label: 'Web',        zone: 2 },
-  { label: 'Games',      zone: 3 },
   { label: 'About',   id: 'about' },
   { label: 'Connect', id: 'connect' },
 ];
@@ -91,9 +90,9 @@ export default function SectionNav() {
     smoothScrollTo(el);
   };
 
-  // Work zones (indices 1–4) have a light background → pink palette
-  // Hero (0), About (5), Highlights/Tools flow, Connect (6) are dark → green palette
-  const theme = active >= 1 && active <= 4 ? 'light' : 'dark';
+  // Work zones (indices 1–3) have a light background → pink palette
+  // Hero (0), About (4), Connect (5) are dark → green palette
+  const theme = active >= 1 && active <= 3 ? 'light' : 'dark';
 
   return (
     <nav

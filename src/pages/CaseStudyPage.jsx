@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,11 +14,40 @@ export default function CaseStudyPage() {
   const project = getProjectBySlug(slug);
   const { next } = getAdjacentProjects(slug);
 
-  const heroRef   = useRef(null);
-  const titleRef  = useRef(null);
-  const metaRef   = useRef(null);
-  const videoRef  = useRef(null);
+  const heroRef     = useRef(null);
+  const titleRef    = useRef(null);
+  const metaRef     = useRef(null);
+  const videoRef    = useRef(null);
+  const modalRef    = useRef(null);
+  const modalVidRef = useRef(null);
   const sectionsRef = useRef([]);
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = useCallback(() => {
+    setModalOpen(true);
+    setTimeout(() => {
+      if (modalVidRef.current) {
+        modalVidRef.current.currentTime = 0;
+        modalVidRef.current.play().catch(() => {});
+      }
+    }, 80);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    if (modalVidRef.current) {
+      modalVidRef.current.pause();
+      modalVidRef.current.currentTime = 0;
+    }
+    setModalOpen(false);
+  }, []);
+
+  // Close on Escape
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') closeModal(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [closeModal]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -95,7 +124,11 @@ export default function CaseStudyPage() {
 
         {/* ── Hero ── */}
         <section className="cs__hero" ref={heroRef}>
-          <div className="cs__hero-media">
+          <div
+            className="cs__hero-media"
+            onClick={project.video ? openModal : undefined}
+            style={project.video ? { cursor: 'none' } : undefined}
+          >
             {project.video ? (
               <video
                 ref={videoRef}
@@ -322,6 +355,31 @@ export default function CaseStudyPage() {
         )}
 
       </main>
+
+      {/* ── HD Video Modal ── */}
+      {modalOpen && project.video && (
+        <div
+          className="cs__modal"
+          ref={modalRef}
+          onClick={(e) => { if (e.target === modalRef.current) closeModal(); }}
+        >
+          <button className="cs__modal-close" onClick={closeModal} aria-label="Close">✕</button>
+          <video
+            ref={modalVidRef}
+            className="cs__modal-video"
+            /* Use videoHD if provided, otherwise fallback to the same src */
+            src={project.videoHD || project.video}
+            controls
+            playsInline
+            loop
+          />
+          {!project.videoHD && (
+            <p className="cs__modal-hint">
+              Para versión HD con audio agrega <code>videoHD</code> en projects.js
+            </p>
+          )}
+        </div>
+      )}
     </>
   );
 }
