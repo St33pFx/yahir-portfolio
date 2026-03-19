@@ -119,7 +119,7 @@ export const categories = [
         name: 'Color Study', // ← cambia al nombre real
         year: '2024',
         tags: ['Cinema 4D', 'Redshift'], // ← ajusta tags
-        image: '/assets/images/3d-01/YellowOptimizada.jpg',
+        image: null,
         video: '/assets/videos/3d-01/3d-01.mp4',
         caseStudy: {
           overview:
@@ -133,11 +133,7 @@ export const categories = [
             motion:
               'Iluminación de tres puntos con un área de luz principal para simular luz de estudio.',
           },
-          gallery: [
-            '/assets/images/3d-01/BlueOptimized.jpg',
-            '/assets/images/3d-01/WhitePNGNoOptimized.png',
-            '/assets/images/3d-01/YellowOptimizada.jpg',
-          ],
+          gallery: [],
           takeaway:
             'El color no es decoración — define materiales, profundidad y emoción en la misma medida que la forma.',
         },
@@ -148,7 +144,7 @@ export const categories = [
         name: 'Render Series', // ← cambia al nombre real
         year: '2024',
         tags: ['Blender', 'Cycles'], // ← ajusta tags
-        image: '/assets/images/3d-02/RenderUno.png',
+        image: '/assets/images/3d-02/RenderUno.webp',
         video: '/assets/videos/3d-02/Turn Lapida 2.mp4',
         caseStudy: {
           overview:
@@ -163,11 +159,11 @@ export const categories = [
               'Sin animación — el movimiento ocurre entre renders, como frames de una historia.',
           },
           gallery: [
-            '/assets/images/3d-02/RenderUno.png',
-            '/assets/images/3d-02/Rende.png',
-            '/assets/images/3d-02/Rende2.png',
-            '/assets/images/3d-02/Rende3.png',
-            '/assets/images/3d-02/Rende4.png',
+            '/assets/images/3d-02/RenderUno.webp',
+            '/assets/images/3d-02/Rende.webp',
+            '/assets/images/3d-02/Rende2.webp',
+            '/assets/images/3d-02/Rende3.webp',
+            '/assets/images/3d-02/Rende4.webp',
           ],
           takeaway:
             'Iterar con propósito es más valioso que iterar por volumen. Cada variante debe responder una pregunta.',
@@ -179,7 +175,7 @@ export const categories = [
         name: 'Room Render', // ← cambia al nombre real
         year: '2024',
         tags: ['Blender', 'Cycles'], // ← ajusta tags
-        image: '/assets/images/3d-03/RoomRenderDay.png',
+        image: '/assets/images/3d-03/RoomRenderDay.webp',
         video: null,
         caseStudy: {
           overview:
@@ -194,10 +190,10 @@ export const categories = [
               'Cámara posicionada para maximizar las líneas de perspectiva y la entrada de luz.',
           },
           gallery: [
-            '/assets/images/3d-03/RoomRenderDay.png',
-            '/assets/images/3d-03/2ChairDay.png',
-            '/assets/images/3d-03/Cuadrito.png',
-            '/assets/images/3d-03/MArble.png',
+            '/assets/images/3d-03/RoomRenderDay.webp',
+            '/assets/images/3d-03/2ChairDay.webp',
+            '/assets/images/3d-03/Cuadrito.webp',
+            '/assets/images/3d-03/MArble.webp',
           ],
           takeaway:
             'El espacio vacío es tan importante como los objetos. Saber cuándo no agregar es la decisión más difícil.',
@@ -209,7 +205,7 @@ export const categories = [
         name: 'Abstract Series', // ← cambia al nombre real
         year: '2023',
         tags: ['Cinema 4D', 'Redshift'], // ← ajusta tags
-        image: '/assets/images/3d-/image.png',
+        image: '/assets/images/3d-/image-1.webp',
         video: '/assets/videos/3d-/1.mp4',
         caseStudy: {
           overview:
@@ -224,11 +220,11 @@ export const categories = [
               'Las variaciones se presentan como secuencia, creando una narrativa visual de evolución.',
           },
           gallery: [
-            '/assets/images/3d-/image.png',
-            '/assets/images/3d-/2.png',
-            '/assets/images/3d-/3.png',
-            '/assets/images/3d-/4.png',
-            '/assets/images/3d-/5.png',
+            '/assets/images/3d-/image-1.webp',
+            '/assets/images/3d-/2-1.webp',
+            '/assets/images/3d-/3-1.webp',
+            '/assets/images/3d-/4-1.webp',
+            '/assets/images/3d-/5-1.webp',
           ],
           takeaway:
             'La exploración sin objetivo produce los descubrimientos más honestos.',
@@ -240,7 +236,7 @@ export const categories = [
         name: 'Monitor C4D', // ← cambia al nombre real
         year: '2023',
         tags: ['Cinema 4D'], // ← ajusta tags
-        image: '/assets/images/MonitoC4D.png',
+        image: null,
         video: null,
         caseStudy: {
           overview:
@@ -254,7 +250,7 @@ export const categories = [
             motion:
               'Iluminación de estudio con fondo degradado para resaltar la forma del producto.',
           },
-          gallery: ['/assets/images/MonitoC4D.png'],
+          gallery: [],
           takeaway:
             'El modelado de producto enseña precisión — cada milímetro incorrecto destruye la credibilidad del render.',
         },
