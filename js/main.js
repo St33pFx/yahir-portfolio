@@ -4,6 +4,10 @@ window.scrollTo(0, 0);
 document.addEventListener('DOMContentLoaded', () => {
   window.scrollTo(0, 0);
   initIntroSequence();
+  initConnectBg();
+  initTextPressure();
+  initHeroSubtitleScroll();
+  initWorkMarquee();
   initStickyCarousel();
   initScrollReveal();
   initNavbarScroll();
@@ -12,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgress();
   initParallaxCards();
   initSmoothScroll();
+  initLinkHover();
 });
 
 /* ═══════════════════════════════════════════
@@ -213,6 +218,295 @@ function splitHeroTitle(title) {
 
     title.appendChild(span);
   });
+}
+
+/* ═══════════════════════════════════════════
+   HERO SUBTITLE — hides on scroll, shows on return
+   ═══════════════════════════════════════════ */
+function initHeroSubtitleScroll() {
+  const subtitle = document.getElementById('heroSubtitle');
+  if (!subtitle) return;
+
+  let lastY = 0;
+  let hidden = false;
+
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const threshold = 5;
+
+    if (y > threshold && !hidden) {
+      hidden = true;
+      gsap.to(subtitle, {
+        y: -40,
+        opacity: 0,
+        duration: 0.15,
+        ease: 'power2.in',
+      });
+    } else if (y <= threshold && hidden) {
+      hidden = false;
+      gsap.to(subtitle, {
+        y: 0,
+        opacity: 1,
+        duration: 0.2,
+        ease: 'power2.out',
+      });
+    }
+
+    lastY = y;
+  }, { passive: true });
+}
+
+/* ═══════════════════════════════════════════
+   WORK MARQUEE — scroll-speed ticker
+   ═══════════════════════════════════════════ */
+function initWorkMarquee() {
+  // Collect all marquees: the header one + all category ones
+  const headerMarquee = document.getElementById('workMarquee');
+  const catMarquees = document.querySelectorAll('[data-marquee]');
+  
+  const allMarquees = [];
+  
+  if (headerMarquee) {
+    allMarquees.push({
+      tracks: headerMarquee.querySelectorAll('.work__marquee-track'),
+      x: 0,
+    });
+  }
+  
+  catMarquees.forEach(m => {
+    allMarquees.push({
+      tracks: m.querySelectorAll('.cat-marquee__track'),
+      x: 0,
+    });
+  });
+
+  if (!allMarquees.length) return;
+
+  let baseSpeed = 0.5;
+  let scrollSpeed = 0;
+  let lastScroll = window.scrollY;
+
+  window.addEventListener('scroll', () => {
+    const delta = Math.abs(window.scrollY - lastScroll);
+    scrollSpeed = Math.min(delta * 0.3, 8);
+    lastScroll = window.scrollY;
+  }, { passive: true });
+
+  function animate() {
+    scrollSpeed *= 0.95;
+    const speed = baseSpeed + scrollSpeed;
+
+    allMarquees.forEach(m => {
+      m.x -= speed;
+      
+      const trackWidth = m.tracks[0].offsetWidth;
+      if (trackWidth > 0 && Math.abs(m.x) >= trackWidth) {
+        m.x += trackWidth;
+      }
+
+      m.tracks.forEach(track => {
+        track.style.transform = `translateX(${m.x}px)`;
+      });
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+/* ═══════════════════════════════════════════
+   CONNECT BG — scaleY reveal from bottom on scroll
+   ═══════════════════════════════════════════ */
+function initConnectBg() {
+  const connectBg = document.getElementById('connectBg');
+  const connectSection = document.getElementById('connect');
+  if (!connectBg || !connectSection) return;
+
+  // ── Gather all text elements to animate ──
+  const heading = connectSection.querySelector('.connect__heading');
+  const emailTop = connectSection.querySelector('.connect__email-top');
+  const emailBottom = connectSection.querySelector('.connect__email-bottom');
+
+  // Split text into chars for each element
+  function splitIntoChars(el) {
+    if (!el) return [];
+    const nodes = Array.from(el.childNodes);
+    el.textContent = '';
+
+    const allChars = [];
+    nodes.forEach(node => {
+      if (node.nodeType === 3) {
+        // Text node — split into chars
+        node.textContent.split('').forEach(char => {
+          const span = document.createElement('span');
+          span.style.display = 'inline-block';
+          span.textContent = char === ' ' ? '\u00A0' : char;
+          el.appendChild(span);
+          allChars.push(span);
+        });
+      } else {
+        // Element node (like <span class="text">) — split its text, keep its styles
+        const text = node.textContent;
+        const wrapper = node.cloneNode(false);
+        wrapper.textContent = '';
+        text.split('').forEach(char => {
+          const span = document.createElement('span');
+          span.style.display = 'inline-block';
+          span.textContent = char === ' ' ? '\u00A0' : char;
+          wrapper.appendChild(span);
+          allChars.push(span);
+        });
+        el.appendChild(wrapper);
+      }
+    });
+    return allChars;
+  }
+
+  // Split heading divs
+  const headingDivs = heading ? heading.querySelectorAll('div') : [];
+  const letsChars = headingDivs[0] ? splitIntoChars(headingDivs[0]) : [];
+  const connectChars = headingDivs[1] ? splitIntoChars(headingDivs[1]) : [];
+
+  // Split email parts
+  const emailTopChars = emailTop ? splitIntoChars(emailTop) : [];
+  const emailBottomChars = emailBottom ? splitIntoChars(emailBottom) : [];
+
+  // Hide all initially
+  const allChars = [...letsChars, ...connectChars, ...emailTopChars, ...emailBottomChars];
+  gsap.set(allChars, { y: '110%', opacity: 0, filter: 'blur(16px)' });
+
+  // Hide connect__content reveal class so GSAP controls it
+  const content = connectSection.querySelector('.connect__content');
+  if (content) content.classList.remove('reveal');
+
+  // Start bg hidden
+  gsap.set(connectBg, { scaleY: 0, transformOrigin: 'bottom center' });
+
+  // Trigger on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // bg reveal
+        gsap.fromTo(connectBg,
+          { scaleY: 0, transformOrigin: 'bottom center' },
+          { scaleY: 1, duration: 1.8, ease: 'power3.out' }
+        );
+
+        // Text timeline — starts almost immediately
+        const tl = gsap.timeline({ delay: 0.1 });
+
+        // "LET'S"
+        if (letsChars.length) {
+          tl.to(letsChars, {
+            y: '0%', opacity: 1, filter: 'blur(0px)',
+            duration: 0.6, stagger: 0.03, ease: 'power4.out',
+          });
+        }
+
+        // "CONNECT"
+        if (connectChars.length) {
+          tl.to(connectChars, {
+            y: '0%', opacity: 1, filter: 'blur(0px)',
+            duration: 0.6, stagger: 0.02, ease: 'power4.out',
+          }, '>-0.5');
+        }
+
+        // "hello@" — starts while CONNECT is still going
+        if (emailTopChars.length) {
+          tl.to(emailTopChars, {
+            y: '0%', opacity: 1, filter: 'blur(0px)',
+            duration: 0.5, stagger: 0.02, ease: 'power3.out',
+          }, '>-0.55');
+        }
+
+        // "jozedzn.com"
+        if (emailBottomChars.length) {
+          tl.to(emailBottomChars, {
+            y: '0%', opacity: 1, filter: 'blur(0px)',
+            duration: 0.5, stagger: 0.02, ease: 'power3.out',
+          }, '>-0.4');
+        }
+
+        observer.unobserve(connectSection);
+      }
+    });
+  }, { threshold: 0.05 });
+
+  observer.observe(connectSection);
+}
+
+/* ═══════════════════════════════════════════
+   TEXT PRESSURE — font-weight reacts to mouse
+   Port of ReactBits TextPressure component
+   Only changes weight, no position shifting
+   ═══════════════════════════════════════════ */
+function initTextPressure() {
+  const emailEl = document.querySelector('.connect__email');
+  if (!emailEl) return;
+
+  // Smoothed mouse position (lerp like the React version)
+  const mouse = { x: 0, y: 0 };
+  const cursor = { x: 0, y: 0 };
+
+  window.addEventListener('mousemove', e => {
+    cursor.x = e.clientX;
+    cursor.y = e.clientY;
+  });
+
+  window.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    cursor.x = t.clientX;
+    cursor.y = t.clientY;
+  }, { passive: true });
+
+  // Initialize cursor to center of email
+  const initRect = emailEl.getBoundingClientRect();
+  mouse.x = cursor.x = initRect.left + initRect.width / 2;
+  mouse.y = cursor.y = initRect.top + initRect.height / 2;
+
+  function dist(a, b) {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function getAttr(distance, maxDist, minVal, maxVal) {
+    const val = maxVal - Math.abs((maxVal * distance) / maxDist);
+    return Math.max(minVal, val + minVal);
+  }
+
+  function animate() {
+    // Lerp factor 15 = same as React version
+    mouse.x += (cursor.x - mouse.x) / 15;
+    mouse.y += (cursor.y - mouse.y) / 15;
+
+    const charEls = emailEl.querySelectorAll('span[style*="inline-block"]');
+    if (!charEls.length) {
+      requestAnimationFrame(animate);
+      return;
+    }
+
+    const emailRect = emailEl.getBoundingClientRect();
+    const maxDist = emailRect.width / 2;
+
+    charEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const center = {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2,
+      };
+
+      const d = dist(mouse, center);
+
+      // Font weight: 100 (thin, far) → 700 (bold, close)
+      const wght = Math.floor(getAttr(d, maxDist, 100, 600));
+
+      el.style.fontWeight = wght;
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
 
 /* ═══════════════════════════════════════════
@@ -418,9 +712,7 @@ function initStickyCarousel() {
     const rect    = target.getBoundingClientRect();
     const zoneH   = rect.height;
     const vpH     = window.innerHeight;
-    // Scroll so the zone is centered vertically
     const destY   = window.scrollY + rect.top - (vpH - zoneH) / 2;
-    // Clamp to document bounds
     const maxY    = document.documentElement.scrollHeight - vpH;
     const targetY = Math.max(0, Math.min(destY, maxY));
     const startY  = window.scrollY;
@@ -441,7 +733,6 @@ function initStickyCarousel() {
         requestAnimationFrame(step);
       } else {
         window.scrollTo(0, targetY);
-        // Small cooldown so IO can settle before we accept wheel events again
         setTimeout(() => { sectionSnapping = false; }, 80);
       }
     }
@@ -506,7 +797,6 @@ function initStickyCarousel() {
 
   // ── Wheel handler ──
   document.addEventListener('wheel', e => {
-    // Block all wheel events while a section snap is in progress
     if (sectionSnapping) {
       e.preventDefault();
       return;
@@ -514,15 +804,12 @@ function initStickyCarousel() {
 
     const zi = zones.findIndex((_, i) => state[i].active);
 
-    // ── Edge case: no zone active ──
     if (zi < 0) {
-      // From hero scrolling down → snap to first zone
       if (heroActive && e.deltaY > 0) {
         e.preventDefault();
         snapToZone(0);
         return;
       }
-      // From connect scrolling up → snap to last zone
       if (connectActive && e.deltaY < 0) {
         e.preventDefault();
         snapToZone(zones.length - 1);
@@ -533,7 +820,6 @@ function initStickyCarousel() {
 
     const s = state[zi];
 
-    // Block page-scroll while a card animation is in progress
     if (s.animating) {
       e.preventDefault();
       return;
@@ -543,11 +829,9 @@ function initStickyCarousel() {
 
     if (e.deltaY > 0) {
       if (s.card < n - 1) {
-        // More cards → advance, block page scroll
         e.preventDefault();
         animateTo(zi, s.card + 1);
       } else {
-        // Last card reached → snap to next zone or connect
         e.preventDefault();
         const nextZi = zi + 1;
         if (nextZi < zones.length) {
@@ -558,11 +842,9 @@ function initStickyCarousel() {
       }
     } else {
       if (s.card > 0) {
-        // Cards behind → go back, block page scroll
         e.preventDefault();
         animateTo(zi, s.card - 1);
       } else {
-        // First card → snap to previous zone or hero
         e.preventDefault();
         const prevZi = zi - 1;
         if (prevZi >= 0) {
@@ -654,8 +936,9 @@ function initCustomCursor() {
   });
 
   (function animate() {
-    cursorX += (mouseX - cursorX) * 0.15;
-    cursorY += (mouseY - cursorY) * 0.15;
+    // Slower lerp = more delay, feels floaty and premium
+    cursorX += (mouseX - cursorX) * 0.08;
+    cursorY += (mouseY - cursorY) * 0.08;
     cursor.style.transform = `translate(${cursorX - 8}px, ${cursorY - 8}px)`;
     requestAnimationFrame(animate);
   })();
@@ -693,14 +976,49 @@ function initScrollProgress() {
 function initParallaxCards() {
   if (window.matchMedia('(max-width: 768px)').matches) return;
 
+  const customCursor = document.getElementById('customCursor');
+
   document.querySelectorAll('.project-card').forEach((card) => {
+    // Create glass cursor element
+    const glass = document.createElement('div');
+    glass.className = 'card-glass-cursor';
+    glass.innerHTML = '<span>View</span>';
+    card.appendChild(glass);
+    gsap.set(glass, { scale: 0.5 });
+
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width  - 0.5;
       const y = (e.clientY - rect.top)  / rect.height - 0.5;
       card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) scale(1.02)`;
+
+      // Move glass cursor with lerp via GSAP
+      gsap.to(glass, {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        duration: 0.4,
+        ease: 'power2.out',
+      });
     });
-    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+
+    card.addEventListener('mouseenter', () => {
+      if (customCursor) customCursor.style.opacity = '0';
+      gsap.to(glass, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.35,
+        ease: 'power3.out',
+        overwrite: true,
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      if (customCursor) customCursor.style.opacity = '1';
+      // Kill ALL active tweens on this glass, then reset
+      gsap.killTweensOf(glass);
+      gsap.set(glass, { scale: 0.5, opacity: 0 });
+    });
   });
 }
 
@@ -718,4 +1036,93 @@ function initSmoothScroll() {
       window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
     });
   });
+}
+
+/* ═══════════════════════════════════════════
+   LINK HOVER — staggered letter roll
+   ═══════════════════════════════════════════ */
+function initLinkHover() {
+  const links = document.querySelectorAll(
+    '.navbar__links a, .footer__links a'
+  );
+
+  // Wait for fonts and layout
+  requestAnimationFrame(() => { requestAnimationFrame(() => {
+    links.forEach(link => {
+      const text = link.textContent.trim();
+      if (!text) return;
+
+      link.textContent = '';
+      link.style.display = 'inline-block';
+      link.style.overflow = 'hidden';
+      link.style.verticalAlign = 'bottom';
+      link.style.lineHeight = '1.2';
+
+      // Top row
+      const top = document.createElement('span');
+      top.style.display = 'flex';
+
+      // Bottom row
+      const bot = document.createElement('span');
+      bot.style.display = 'flex';
+
+      text.split('').forEach(char => {
+        const t = document.createElement('span');
+        t.style.display = 'inline-block';
+        t.textContent = char === ' ' ? '\u00A0' : char;
+        top.appendChild(t);
+
+        const b = document.createElement('span');
+        b.style.display = 'inline-block';
+        b.textContent = char === ' ' ? '\u00A0' : char;
+        bot.appendChild(b);
+      });
+
+      link.appendChild(top);
+      link.appendChild(bot);
+
+      // Measure after inserting into DOM
+      const h = top.offsetHeight;
+      link.style.height = h + 'px';
+
+      const topChars = top.querySelectorAll('span');
+      const botChars = bot.querySelectorAll('span');
+
+      let tween = null;
+
+      link.addEventListener('mouseenter', () => {
+        if (tween) tween.kill();
+        tween = gsap.timeline();
+        tween.to(topChars, {
+          y: -h,
+          duration: 0.3,
+          stagger: 0.02,
+          ease: 'power2.inOut',
+        }, 0);
+        tween.to(botChars, {
+          y: -h,
+          duration: 0.3,
+          stagger: 0.02,
+          ease: 'power2.inOut',
+        }, 0);
+      });
+
+      link.addEventListener('mouseleave', () => {
+        if (tween) tween.kill();
+        tween = gsap.timeline();
+        tween.to(topChars, {
+          y: 0,
+          duration: 0.3,
+          stagger: 0.02,
+          ease: 'power2.inOut',
+        }, 0);
+        tween.to(botChars, {
+          y: 0,
+          duration: 0.3,
+          stagger: 0.02,
+          ease: 'power2.inOut',
+        }, 0);
+      });
+    });
+  }); });
 }
