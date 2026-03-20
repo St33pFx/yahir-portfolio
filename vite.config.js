@@ -8,10 +8,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Split vendor libraries into separate cacheable chunks
-        manualChunks: {
-          'react-vendor':  ['react', 'react-dom', 'react-router-dom'],
-          'gsap-vendor':   ['gsap'],
-          'three-vendor':  ['three'],
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) {
+            return 'react-vendor';
+          }
+          if (id.includes('node_modules/gsap')) {
+            return 'gsap-vendor';
+          }
+          if (id.includes('node_modules/three')) {
+            return 'three-vendor';
+          }
         },
       },
     },
