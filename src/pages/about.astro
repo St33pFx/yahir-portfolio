@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AboutPage from '../components/AboutPage';
+
+const profileSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: 'https://jozedzn.com/about',
+  name: 'About JozeDzn',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'JozeDzn',
+    url: 'https://jozedzn.com',
+    jobTitle: 'Creative Developer',
+    description: 'Creative Developer based in Mexico specializing in Motion Graphics, 3D Art, Web Development, and interactive experiences.',
+    sameAs: ['https://linkedin.com/in/jozedzn', 'https://instagram.com/jozedzn'],
+    knowsAbout: ['Motion Graphics', '3D Art', 'Web Development', 'After Effects', 'Blender', 'Cinema 4D', 'React', 'GSAP'],
+  },
+};
+---
+<BaseLayout
+  title="About — JozeDzn | Creative Developer in Mexico"
+  description="JozeDzn is a Creative Developer based in Mexico specializing in Motion Graphics, 3D Art, Web Development, and interactive experiences — 4+ years building digital content that reaches millions."
+  canonicalPath="/about"
+  jsonLd={profileSchema}
+>
+  <AboutPage client:load />
+</BaseLayout>

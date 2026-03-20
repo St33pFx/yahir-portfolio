@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AnimatedLink from './AnimatedLink';
 
@@ -13,8 +12,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen]   = useState(false);
   const [activeLink, setActiveLink]   = useState(null); // 'work' | 'connect' | null
   const navRef = useRef(null);
-  const location = useLocation();
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
   const toggleLang = () => {
@@ -65,8 +62,8 @@ export default function Navbar() {
     setMobileOpen(false);
     document.body.style.overflow = '';
 
-    if (location.pathname !== '/') {
-      navigate('/' + hash);
+    if (window.location.pathname !== '/') {
+      window.location.href = '/' + hash;
       return;
     }
 

@@ -2123,6 +2123,7 @@ ul {
   width: 100%;
   top: -80px;
   z-index: 0;
+  transform: scaleY(0);
   transform-origin: bottom center;
 }
 

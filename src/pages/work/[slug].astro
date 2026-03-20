@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CaseStudyPage from '../../components/CaseStudyPage';
+import { getAllProjects, getProjectBySlug } from '../../data/projects';
+
+export function getStaticPaths() {
+  return getAllProjects()
+    .filter(p => p.caseStudy?.overview)
+    .map(p => ({ params: { slug: p.slug }, props: { slug: p.slug } }));
+}
+
+const { slug } = Astro.props;
+const project = getProjectBySlug(slug);
+
+const pageTitle = project
+  ? `${project.name} — ${project.category} | JozeDzn`
+  : 'Work | JozeDzn';
+
+const pageDesc = project?.caseStudy?.overview
+  ? project.caseStudy.overview.slice(0, 155) + (project.caseStudy.overview.length > 155 ? '…' : '')
+  : `${project?.name} — a ${project?.category} project by JozeDzn.`;
+
+const pageImage = project?.image
+  ? project.image  // local path — BaseLayout will prepend siteUrl
+  : project?.vimeoId
+  ? `https://vumbnail.com/${project.vimeoId}.jpg`
+  : undefined;
+
+const breadcrumbSchema = project ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://jozedzn.com' },
+    { '@type': 'ListItem', position: 2, name: 'Work', item: 'https://jozedzn.com/work' },
+    { '@type': 'ListItem', position: 3, name: project.name, item: `https://jozedzn.com/work/${slug}` },
+  ],
+} : null;
+
+const creativeWorkSchema = project ? {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: project.name,
+  description: pageDesc,
+  url: `https://jozedzn.com/work/${slug}`,
+  dateCreated: project.year,
+  creator: { '@type': 'Person', name: 'JozeDzn', url: 'https://jozedzn.com' },
+  genre: project.category,
+  keywords: project.tags?.join(', '),
+} : null;
+
+const jsonLd = [breadcrumbSchema, creativeWorkSchema].filter(Boolean);
+---
+<BaseLayout
+  title={pageTitle}
+  description={pageDesc}
+  canonicalPath={`/work/${slug}`}
+  ogImage={pageImage}
+  jsonLd={jsonLd}
+>
+  <CaseStudyPage slug={slug} client:load />
+</BaseLayout>

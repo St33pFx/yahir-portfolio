@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getProjectBySlug, getAdjacentProjects } from '../data/projects';
 import { vimeoModalPlayerSrc, fetchVimeoThumbnail } from '../utils/vimeo';
-import Navbar from '../components/Navbar';
-import CustomCursor from '../components/CustomCursor';
-import SplitText from '../components/SplitText';
+import Navbar from './Navbar';
+import CustomCursor from './CustomCursor';
+import SplitText from './SplitText';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function CaseStudyPage() {
-  const { slug } = useParams();
+export default function CaseStudyPage({ slug }) {
   const project = getProjectBySlug(slug);
   const { next } = getAdjacentProjects(slug);
 
@@ -33,9 +30,7 @@ export default function CaseStudyPage() {
   // Fetch HD thumbnail from Vimeo oEmbed (1920px) — start with low-res vumbnail as instant placeholder
   useEffect(() => {
     if (!project?.vimeoId) { setHeroThumb(null); return; }
-    // Instant low-res placeholder
     setHeroThumb(`https://vumbnail.com/${project.vimeoId}.jpg`);
-    // Upgrade to HD
     let cancelled = false;
     fetchVimeoThumbnail(project.vimeoId).then((hdUrl) => {
       if (!cancelled && hdUrl) setHeroThumb(hdUrl);
@@ -43,26 +38,18 @@ export default function CaseStudyPage() {
     return () => { cancelled = true; };
   }, [project?.vimeoId]);
 
-  // Reset the overlay and listen for Vimeo's real play event via postMessage
   useEffect(() => {
     setHeroVimeoReady(false);
-
     if (!project?.vimeoId) return;
-
-    // When the Vimeo player posts a message that the video has started playing,
-    // we know the first frame is visible and we can fade the thumbnail overlay.
     const handleVimeoMessage = (e) => {
       if (!e.origin.includes('vimeo.com')) return;
       try {
         const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        // Vimeo fires 'playProgress' on each timeupdate while playing.
-        // We only need the very first one to know the video is live.
         if (data?.event === 'playProgress' || data?.event === 'play') {
           setHeroVimeoReady(true);
         }
       } catch { /* ignore non-JSON messages */ }
     };
-
     window.addEventListener('message', handleVimeoMessage);
     return () => window.removeEventListener('message', handleVimeoMessage);
   }, [slug, project?.vimeoId]);
@@ -86,7 +73,6 @@ export default function CaseStudyPage() {
     setModalOpen(false);
   }, []);
 
-  // Close on Escape
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') closeModal(); };
     document.addEventListener('keydown', onKey);
@@ -107,7 +93,6 @@ export default function CaseStudyPage() {
     if (!project) return;
 
     const ctx = gsap.context(() => {
-      // Hero: title and meta slide up + fade in
       gsap.fromTo(
         titleRef.current,
         { y: 60, opacity: 0 },
@@ -119,7 +104,6 @@ export default function CaseStudyPage() {
         { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.5 }
       );
 
-      // Scroll reveal for each content section
       sectionsRef.current.forEach((el) => {
         if (!el) return;
         gsap.fromTo(
@@ -147,7 +131,7 @@ export default function CaseStudyPage() {
         <Navbar />
         <div className="cs-not-found">
           <h1>Project not found</h1>
-          <Link to="/">← Back to Home</Link>
+          <a href="/">← Back to Home</a>
         </div>
       </>
     );
@@ -158,62 +142,9 @@ export default function CaseStudyPage() {
   };
 
   const cs = project.caseStudy || {};
-  const pageTitle = `${project.name} — ${project.category} | JozeDzn`;
-  const pageDesc = cs.overview
-    ? cs.overview.slice(0, 155) + (cs.overview.length > 155 ? '…' : '')
-    : `${project.name} — a ${project.category} project by JozeDzn.`;
-  const pageUrl = `https://jozedzn.com/work/${project.slug}`;
-  const pageImage = project.image
-    ? `https://jozedzn.com${project.image}`
-    : project.vimeoId
-    ? `https://vumbnail.com/${project.vimeoId}.jpg`
-    : 'https://jozedzn.com/assets/images/og-image.png';
-
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://jozedzn.com' },
-      { '@type': 'ListItem', position: 2, name: 'Work',  item: 'https://jozedzn.com/work' },
-      { '@type': 'ListItem', position: 3, name: project.name, item: pageUrl },
-    ],
-  };
-
-  const creativeWorkSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'CreativeWork',
-    name: project.name,
-    description: pageDesc,
-    url: pageUrl,
-    image: pageImage,
-    dateCreated: project.year,
-    creator: {
-      '@type': 'Person',
-      name: 'JozeDzn',
-      url: 'https://jozedzn.com',
-    },
-    genre: project.category,
-    keywords: project.tags?.join(', '),
-  };
 
   return (
     <>
-      <Helmet>
-        <html lang="en" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={pageUrl} />
-        <meta property="og:type"        content="article" />
-        <meta property="og:url"         content={pageUrl} />
-        <meta property="og:title"       content={pageTitle} />
-        <meta property="og:description" content={pageDesc} />
-        <meta property="og:image"       content={pageImage} />
-        <meta name="twitter:title"       content={pageTitle} />
-        <meta name="twitter:description" content={pageDesc} />
-        <meta name="twitter:image"       content={pageImage} />
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-        <script type="application/ld+json">{JSON.stringify(creativeWorkSchema)}</script>
-      </Helmet>
       <CustomCursor />
       <Navbar />
 
@@ -227,8 +158,6 @@ export default function CaseStudyPage() {
             style={(project.vimeoId || project.video) ? { cursor: 'none' } : undefined}
           >
             {project.vimeoId ? (
-              /* Vimeo background=1 mode — autoplay, muted, loop, no UI.
-                 api=1 enables postMessage events so we know when it actually plays. */
               <>
                 <iframe
                   ref={heroIframeRef}
@@ -239,13 +168,9 @@ export default function CaseStudyPage() {
                   referrerPolicy="strict-origin-when-cross-origin"
                   title={project.name}
                   onLoad={() => {
-                    // Fallback: hide overlay when iframe DOM loads (covers the case
-                    // where postMessage events don't fire, e.g. privacy settings).
-                    // Add a small delay so the video has a moment to render its first frame.
                     setTimeout(() => setHeroVimeoReady(true), 800);
                   }}
                 />
-                {/* Thumbnail shown instantly while the iframe loads, then fades out */}
                 <div
                   className="cs__hero-thumb-overlay"
                   style={{
@@ -271,7 +196,6 @@ export default function CaseStudyPage() {
             )}
             <div className="cs__hero-vignette" />
 
-            {/* Mobile tap hint — only visible on touch screens when video exists */}
             {(project.vimeoId || project.video) && !tapHintDismissed && (
               <div className="cs__tap-hint" aria-hidden="true">
                 <div className="cs__tap-hint__ring" />
@@ -301,9 +225,8 @@ export default function CaseStudyPage() {
         {/* ── Content wrapper ── */}
         <div className="cs__body">
 
-          <Link to="/work" className="cs__back-nav">← All Work</Link>
+          <a href="/work" className="cs__back-nav">← All Work</a>
 
-          {/* Overview */}
           {cs.overview && (
             <section className="cs__section cs__overview">
               <SplitText
@@ -337,7 +260,6 @@ export default function CaseStudyPage() {
             </section>
           )}
 
-          {/* Goal */}
           {cs.goal && (
             <section className="cs__section cs__goal">
               <SplitText
@@ -371,7 +293,6 @@ export default function CaseStudyPage() {
             </section>
           )}
 
-          {/* Process */}
           {cs.process && (
             <section className="cs__section cs__process" ref={addSection}>
               <SplitText
@@ -405,7 +326,6 @@ export default function CaseStudyPage() {
             </section>
           )}
 
-          {/* Visual Break / Gallery */}
           {cs.gallery && cs.gallery.length > 0 && (
             <section className="cs__section cs__gallery" ref={addSection}>
               <SplitText
@@ -432,7 +352,6 @@ export default function CaseStudyPage() {
             </section>
           )}
 
-          {/* Takeaway */}
           {cs.takeaway && (
             <section className="cs__section cs__takeaway">
               <SplitText
@@ -470,7 +389,7 @@ export default function CaseStudyPage() {
 
         {/* ── Next Project ── */}
         {next ? (
-          <Link to={`/work/${next.slug}`} className="cs__next">
+          <a href={`/work/${next.slug}`} className="cs__next">
             <div className="cs__next-inner">
               <span className="cs__next-label">Next Project</span>
               <div className="cs__next-media">
@@ -493,16 +412,16 @@ export default function CaseStudyPage() {
                 <span className="cs__next-arrow">→</span>
               </div>
             </div>
-          </Link>
+          </a>
         ) : (
           <div className="cs__next cs__next--end">
-            <Link to="/" className="cs__back-home">← Back to Home</Link>
+            <a href="/" className="cs__back-home">← Back to Home</a>
           </div>
         )}
 
       </main>
 
-      {/* ── Video Modal — Vimeo with audio, or local HD ── */}
+      {/* ── Video Modal ── */}
       {modalOpen && (project.vimeoId || project.video) && (
         <div
           className="cs__modal"

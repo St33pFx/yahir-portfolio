@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import ProjectCard from './ProjectCard';
 
 const CATEGORY_ROUTES = {
@@ -23,9 +22,9 @@ export default function CategoryZone({ category, index, activeCard, isFirst }) {
           <div className="work__category-title-row">
             <h3 className="work__category-title">{category.title}</h3>
             {catRoute && (
-              <Link to={catRoute} className="work__category-view-all" aria-label={`View all ${category.title} projects`}>
+              <a href={catRoute} className="work__category-view-all" aria-label={`View all ${category.title} projects`}>
                 View all →
-              </Link>
+              </a>
             )}
           </div>
           <div className="work__projects-track">

@@ -1,0 +1,176 @@
+---
+import '../styles/style.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  lang?: string;
+  canonicalPath: string;
+  ogImage?: string;
+  jsonLd?: object | object[];
+  robots?: string;
+}
+
+const {
+  title,
+  description,
+  lang = 'en',
+  canonicalPath,
+  ogImage,
+  jsonLd,
+  robots = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
+} = Astro.props;
+
+const siteUrl = 'https://jozedzn.com';
+const canonical = siteUrl + canonicalPath;
+
+// ogImage can be a full URL (e.g. vumbnail.com) or a local path
+const ogImageFull = ogImage?.startsWith('http')
+  ? ogImage
+  : siteUrl + (ogImage || '/assets/images/og-image.png');
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'JozeDzn',
+  url: siteUrl,
+  email: 'hello@jozedzn.com',
+  jobTitle: 'Creative Developer',
+  description: 'Creative Developer based in Mexico specializing in Motion Graphics, 3D Art, Web Design, and Game Development.',
+  image: ogImageFull,
+  sameAs: ['https://linkedin.com/in/jozedzn', 'https://instagram.com/jozedzn'],
+  address: { '@type': 'PostalAddress', addressCountry: 'MX', addressRegion: 'Mexico' },
+  knowsAbout: ['Motion Graphics', '3D Art', 'Web Development', 'Game Development', 'After Effects', 'Blender', 'Cinema 4D', 'React', 'GSAP', 'Unity'],
+  hasOccupation: { '@type': 'Occupation', name: 'Creative Developer', occupationalCategory: '15-1255.00' },
+};
+
+const extraSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const allSchemas = [personSchema, ...extraSchemas];
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary meta -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content="JozeDzn" />
+  <meta name="robots" content={robots} />
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="JozeDzn" />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImageFull} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="JozeDzn portfolio — Creative Developer" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="es_MX" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@jozedzn" />
+  <meta name="twitter:creator" content="@jozedzn" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageFull} />
+
+  <!-- PWA / Theme -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0c0c0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="JozeDzn" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Structured data -->
+  {allSchemas.map(schema => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))}
+
+  <!-- DNS prefetch -->
+  <link rel="dns-prefetch" href="https://player.vimeo.com" />
+  <link rel="dns-prefetch" href="https://vimeo.com" />
+  <link rel="dns-prefetch" href="https://vumbnail.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Preload critical fonts -->
+  <link rel="preload" href="/assets/fonts/Bulevar-Regular.otf" as="font" type="font/otf" crossorigin />
+  <link rel="preload" href="/assets/fonts/N27-Regular.otf" as="font" type="font/otf" crossorigin />
+  <link rel="preload" href="/assets/fonts/N27-Light.otf" as="font" type="font/otf" crossorigin />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    /* Inline critical styles so loader shows before any CSS bundle */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    #loader {
+      position: fixed; inset: 0; background: #0c0c0c; z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #loader.out { opacity: 0; pointer-events: none; }
+    #loader-inner { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    #loader-wordmark {
+      font-family: sans-serif; font-size: 13px; letter-spacing: 0.35em;
+      text-transform: uppercase; color: rgba(179, 243, 129, 0.5);
+    }
+    #loader-bar-track { width: 120px; height: 1px; background: rgba(179, 243, 129, 0.15); overflow: hidden; }
+    #loader-bar-fill {
+      height: 100%; width: 0%; background: #b3f381;
+      animation: loader-grow 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes loader-grow { 0% { width: 0%; } 60% { width: 85%; } 100% { width: 100%; } }
+  </style>
+</head>
+<body>
+  <!-- Loader — visible immediately, before React hydrates -->
+  <div id="loader">
+    <div id="loader-inner">
+      <div id="loader-wordmark">JozeDzn</div>
+      <div id="loader-bar-track">
+        <div id="loader-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <slot />
+
+  <!-- Client-side i18n init (language detection from localStorage/navigator) -->
+  <script>
+    import '../i18n/index.js';
+  </script>
+
+  <!-- Loader dismissal after fonts + React first paint -->
+  <script is:inline>
+    history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
+    function dismissLoader() {
+      var loader = document.getElementById('loader');
+      if (!loader) return;
+      loader.classList.add('out');
+      setTimeout(function() { loader.remove(); }, 750);
+    }
+
+    document.fonts.ready
+      .then(function() {
+        requestAnimationFrame(function() { requestAnimationFrame(dismissLoader); });
+      })
+      .catch(function() {
+        requestAnimationFrame(function() { requestAnimationFrame(dismissLoader); });
+      });
+  </script>
+</body>
+</html>

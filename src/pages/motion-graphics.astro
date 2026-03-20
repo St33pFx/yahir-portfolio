@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MotionPage from '../components/MotionPage';
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Motion Graphics — JozeDzn',
+  url: 'https://jozedzn.com/motion-graphics',
+  description: 'Motion graphics projects: kinetic typography, audio-reactive animation, and 3D compositing by JozeDzn.',
+  author: { '@type': 'Person', name: 'JozeDzn', url: 'https://jozedzn.com' },
+  about: { '@type': 'Thing', name: 'Motion Graphics' },
+};
+---
+<BaseLayout
+  title="Motion Graphics — JozeDzn | After Effects, Cinema 4D, DaVinci Resolve"
+  description="Motion graphics projects by JozeDzn: kinetic typography, audio-reactive animation, 3D compositing, and motion design for social and digital media — built in After Effects, Cinema 4D, Blender, and DaVinci Resolve."
+  canonicalPath="/motion-graphics"
+  jsonLd={collectionSchema}
+>
+  <MotionPage client:load />
+</BaseLayout>

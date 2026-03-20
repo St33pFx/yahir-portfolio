@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { fetchVimeoThumbnail, vimeoPreviewSrc } from '../utils/vimeo';
 
 /**
@@ -97,8 +96,8 @@ export default function ProjectCard({ project }) {
     (vimeoOnlyPreview && vimeoActive && vimeoReady);
 
   return (
-    <Link
-      to={`/work/${project.slug}`}
+    <a
+      href={`/work/${project.slug}`}
       className={`project-card${hover ? ' project-card--hover' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -157,6 +156,6 @@ export default function ProjectCard({ project }) {
         </div>
         <span className="project-card__cta">→ View Project</span>
       </div>
-    </Link>
+    </a>
   );
 }

@@ -39,6 +39,7 @@ export default function Hero() {
   const elementsRef = useRef(null);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
+  const bgTweenRef = useRef(null); // persists across i18n re-renders
 
   useLayoutEffect(() => {
     const heroBg = bgRef.current;
@@ -49,18 +50,20 @@ export default function Hero() {
 
     if (!heroBg || !heroEls || !heroTitle || !navbar) return;
 
-    let bgTween, tl;
+    // bg-top: fromTo always starts from -100% regardless of React hydration state
+    if (!bgTweenRef.current) {
+      bgTweenRef.current = gsap.fromTo(
+        heroBg,
+        { yPercent: -100 },
+        { yPercent: 0, duration: 1.4, ease: 'power3.out', delay: 0.3 },
+      );
+    }
+
+    let tl;
 
     // Wait for fonts so GSAP animates already-measured text (no layout shift)
     document.fonts.ready.then(() => {
       const chars = heroTitle.querySelectorAll('.char');
-
-      // bg-top: slides down from top
-      bgTween = gsap.fromTo(
-        heroBg,
-        { scaleY: 0, transformOrigin: 'top center' },
-        { scaleY: 1, duration: 2, ease: 'power3.out', delay: 0.3 },
-      );
 
       // Eye: enters from below after bg-top is mostly visible (~1.1s in)
       gsap.fromTo(
@@ -145,8 +148,8 @@ export default function Hero() {
     }); // end document.fonts.ready
 
     return () => {
-      if (bgTween) bgTween.kill();
       if (tl) tl.kill();
+      // bgTweenRef is intentionally NOT killed here — persists across i18n re-renders
     };
   }, []);
 
