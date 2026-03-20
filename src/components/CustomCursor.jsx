@@ -16,6 +16,26 @@ export default function CustomCursor() {
     let gx = 0, gy = 0;
     let rafId;
     let mode = 'default';
+    let frameCount = 0;
+
+    /** Walk up the DOM and return true if the nearest visible background is light */
+    function isOverLightBg(el) {
+      let node = el;
+      while (node && node !== document.documentElement) {
+        const bg = getComputedStyle(node).backgroundColor;
+        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+          const m = bg.match(/\d+/g);
+          if (m) {
+            const [r, g, b] = m.map(Number);
+            // Relative luminance (simplified sRGB)
+            const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            return lum > 0.6;
+          }
+        }
+        node = node.parentElement;
+      }
+      return false;
+    }
 
     const INTERACTIVE = 'a, button, .project-card, .skill-badge, .navbar__hamburger, .cs__hero-media, [role="button"]';
 
@@ -70,6 +90,14 @@ export default function CustomCursor() {
       glass.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
 
       rafId = requestAnimationFrame(animate);
+
+      // Every ~10 frames, sample background luminance under cursor
+      if (++frameCount % 10 === 0) {
+        const el = document.elementFromPoint(mx, my);
+        const isLight = el ? isOverLightBg(el) : false;
+        dot.classList.toggle('cc-dot--light', isLight);
+        glass.classList.toggle('cc-glass--light', isLight);
+      }
     }
     rafId = requestAnimationFrame(animate);
 

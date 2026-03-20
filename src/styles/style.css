@@ -2238,7 +2238,13 @@ ul {
     height      0.45s cubic-bezier(0.22, 1, 0.36, 1),
     margin      0.45s cubic-bezier(0.22, 1, 0.36, 1),
     border-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
     opacity     0.25s ease;
+}
+
+/* Over light backgrounds — switch stroke to pink */
+.cc-dot.cc-dot--light {
+  border-color: #e36085;
 }
 
 .cc-dot.hovering {
