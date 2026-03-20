@@ -49,7 +49,7 @@ export function vimeoModalPlayerSrc(vimeoId) {
   const q = new URLSearchParams({
     autoplay: '1',
     muted: '0',
-    controls: '0',
+    controls: '1',
     title: '0',
     byline: '0',
     portrait: '0',

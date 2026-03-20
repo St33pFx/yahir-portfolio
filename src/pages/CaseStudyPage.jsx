@@ -27,6 +27,7 @@ export default function CaseStudyPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroVimeoReady, setHeroVimeoReady] = useState(false);
   const [heroThumb, setHeroThumb] = useState(null);
+  const [tapHintDismissed, setTapHintDismissed] = useState(false);
 
   // Fetch HD thumbnail from Vimeo oEmbed (1920px) — start with low-res vumbnail as instant placeholder
   useEffect(() => {
@@ -66,6 +67,7 @@ export default function CaseStudyPage() {
   }, [slug, project?.vimeoId]);
 
   const openModal = useCallback(() => {
+    setTapHintDismissed(true);
     setModalOpen(true);
     setTimeout(() => {
       if (modalVidRef.current) {
@@ -214,6 +216,19 @@ export default function CaseStudyPage() {
               />
             )}
             <div className="cs__hero-vignette" />
+
+            {/* Mobile tap hint — only visible on touch screens when video exists */}
+            {(project.vimeoId || project.video) && !tapHintDismissed && (
+              <div className="cs__tap-hint" aria-hidden="true">
+                <div className="cs__tap-hint__ring" />
+                <div className="cs__tap-hint__circle">
+                  <svg width="18" height="20" viewBox="0 0 18 20" fill="none" aria-hidden="true">
+                    <path d="M1 1.5L17 10L1 18.5V1.5Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <span className="cs__tap-hint__label">Tap to watch with sound</span>
+              </div>
+            )}
           </div>
 
           <div className="cs__hero-content">
