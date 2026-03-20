@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getProjectBySlug, getAdjacentProjects } from '../data/projects';
+import { vimeoModalPlayerSrc, fetchVimeoThumbnail } from '../utils/vimeo';
 import Navbar from '../components/Navbar';
 import CustomCursor from '../components/CustomCursor';
 import SplitText from '../components/SplitText';
@@ -18,11 +19,51 @@ export default function CaseStudyPage() {
   const titleRef    = useRef(null);
   const metaRef     = useRef(null);
   const videoRef    = useRef(null);
+  const heroIframeRef = useRef(null);
   const modalRef    = useRef(null);
   const modalVidRef = useRef(null);
   const sectionsRef = useRef([]);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [heroVimeoReady, setHeroVimeoReady] = useState(false);
+  const [heroThumb, setHeroThumb] = useState(null);
+
+  // Fetch HD thumbnail from Vimeo oEmbed (1920px) — start with low-res vumbnail as instant placeholder
+  useEffect(() => {
+    if (!project?.vimeoId) { setHeroThumb(null); return; }
+    // Instant low-res placeholder
+    setHeroThumb(`https://vumbnail.com/${project.vimeoId}.jpg`);
+    // Upgrade to HD
+    let cancelled = false;
+    fetchVimeoThumbnail(project.vimeoId).then((hdUrl) => {
+      if (!cancelled && hdUrl) setHeroThumb(hdUrl);
+    });
+    return () => { cancelled = true; };
+  }, [project?.vimeoId]);
+
+  // Reset the overlay and listen for Vimeo's real play event via postMessage
+  useEffect(() => {
+    setHeroVimeoReady(false);
+
+    if (!project?.vimeoId) return;
+
+    // When the Vimeo player posts a message that the video has started playing,
+    // we know the first frame is visible and we can fade the thumbnail overlay.
+    const handleVimeoMessage = (e) => {
+      if (!e.origin.includes('vimeo.com')) return;
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        // Vimeo fires 'playProgress' on each timeupdate while playing.
+        // We only need the very first one to know the video is live.
+        if (data?.event === 'playProgress' || data?.event === 'play') {
+          setHeroVimeoReady(true);
+        }
+      } catch { /* ignore non-JSON messages */ }
+    };
+
+    window.addEventListener('message', handleVimeoMessage);
+    return () => window.removeEventListener('message', handleVimeoMessage);
+  }, [slug, project?.vimeoId]);
 
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -126,10 +167,39 @@ export default function CaseStudyPage() {
         <section className="cs__hero" ref={heroRef}>
           <div
             className="cs__hero-media"
-            onClick={project.video ? openModal : undefined}
-            style={project.video ? { cursor: 'none' } : undefined}
+            onClick={project.vimeoId ? openModal : project.video ? openModal : undefined}
+            style={(project.vimeoId || project.video) ? { cursor: 'none' } : undefined}
           >
-            {project.video ? (
+            {project.vimeoId ? (
+              /* Vimeo background=1 mode — autoplay, muted, loop, no UI.
+                 api=1 enables postMessage events so we know when it actually plays. */
+              <>
+                <iframe
+                  ref={heroIframeRef}
+                  className="cs__hero-video cs__hero-iframe"
+                  src={`https://player.vimeo.com/video/${project.vimeoId}?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1&api=1`}
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  title={project.name}
+                  onLoad={() => {
+                    // Fallback: hide overlay when iframe DOM loads (covers the case
+                    // where postMessage events don't fire, e.g. privacy settings).
+                    // Add a small delay so the video has a moment to render its first frame.
+                    setTimeout(() => setHeroVimeoReady(true), 800);
+                  }}
+                />
+                {/* Thumbnail shown instantly while the iframe loads, then fades out */}
+                <div
+                  className="cs__hero-thumb-overlay"
+                  style={{
+                    backgroundImage: heroThumb ? `url(${heroThumb})` : 'none',
+                    opacity: heroVimeoReady ? 0 : 1,
+                  }}
+                  aria-hidden
+                />
+              </>
+            ) : project.video ? (
               <video
                 ref={videoRef}
                 className="cs__hero-video"
@@ -336,10 +406,17 @@ export default function CaseStudyPage() {
               <span className="cs__next-label">Next Project</span>
               <div className="cs__next-media">
                 {next.video ? (
-                  <video src={next.video} muted loop playsInline autoPlay className="cs__next-img" />
-                ) : (
+                  <video
+                    src={next.video}
+                    poster={next.image || (next.vimeoId ? `https://vumbnail.com/${next.vimeoId}_large.jpg` : undefined)}
+                    muted loop playsInline autoPlay
+                    className="cs__next-img"
+                  />
+                ) : next.image ? (
                   <img src={next.image} alt={next.name} className="cs__next-img" loading="lazy" />
-                )}
+                ) : next.vimeoId ? (
+                  <img src={`https://vumbnail.com/${next.vimeoId}_large.jpg`} alt={next.name} className="cs__next-img" loading="lazy" />
+                ) : null}
                 <div className="cs__next-overlay" />
               </div>
               <div className="cs__next-info">
@@ -356,27 +433,40 @@ export default function CaseStudyPage() {
 
       </main>
 
-      {/* ── HD Video Modal ── */}
-      {modalOpen && project.video && (
+      {/* ── Video Modal — Vimeo with audio, or local HD ── */}
+      {modalOpen && (project.vimeoId || project.video) && (
         <div
           className="cs__modal"
           ref={modalRef}
           onClick={(e) => { if (e.target === modalRef.current) closeModal(); }}
         >
           <button className="cs__modal-close" onClick={closeModal} aria-label="Close">✕</button>
-          <video
-            ref={modalVidRef}
-            className="cs__modal-video"
-            /* Use videoHD if provided, otherwise fallback to the same src */
-            src={project.videoHD || project.video}
-            controls
-            playsInline
-            loop
-          />
-          {!project.videoHD && (
-            <p className="cs__modal-hint">
-              Para versión HD con audio agrega <code>videoHD</code> en projects.js
-            </p>
+
+          {project.vimeoId ? (
+            <div
+              className="cs__modal-vimeo-frame"
+              onClick={(e) => e.stopPropagation()}
+              role="presentation"
+            >
+              <iframe
+                className="cs__modal-vimeo-iframe"
+                src={vimeoModalPlayerSrc(project.vimeoId)}
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                title={project.name}
+              />
+            </div>
+          ) : (
+            <video
+              ref={modalVidRef}
+              className="cs__modal-video"
+              src={project.videoHD || project.video}
+              controls
+              playsInline
+              loop
+            />
           )}
         </div>
       )}

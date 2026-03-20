@@ -1,53 +1,124 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchVimeoThumbnail, vimeoPreviewSrc } from '../utils/vimeo';
+
+/**
+ * Comportamiento:
+ * 1. Sin hover → siempre thumbnail (imagen local o poster Vimeo).
+ * 2. Hover → preview en autoplay (MP4 local o iframe Vimeo).
+ * 3. Click en la card → navega al case study (react-router Link).
+ */
+function initialPoster(project) {
+  if (project.image) return project.image;
+  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}.jpg`;
+  return null;
+}
 
 export default function ProjectCard({ project }) {
+  const rootRef = useRef(null);
   const videoRef = useRef(null);
-  const [videoVisible, setVideoVisible] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [localReady, setLocalReady] = useState(false);
+  const [vimeoActive, setVimeoActive] = useState(false);
+  const [vimeoReady, setVimeoReady] = useState(false);
+  const [posterSrc, setPosterSrc] = useState(() => initialPoster(project));
 
-  // When both image + video exist: show image as thumbnail, crossfade to video on hover
-  // When only video: show video always (first frame = thumbnail via preload)
-  // When only image: show image
-  const hasImage = Boolean(project.image);
-  const hasVideo = Boolean(project.video);
+  const hasVimeo = Boolean(project.vimeoId);
+  const hasLocalVideo = Boolean(project.video);
+  const vimeoOnlyPreview = hasVimeo && !hasLocalVideo;
+
+  /* Thumbnail inmediato + upgrade a HD (oEmbed) si aplica */
+  useEffect(() => {
+    setPosterSrc(initialPoster(project));
+
+    if (project.image) return;
+    if (!project.vimeoId) return;
+
+    let cancelled = false;
+    (async () => {
+      const hd = await fetchVimeoThumbnail(project.vimeoId);
+      if (cancelled || !hd) return;
+      setPosterSrc(hd);
+    })();
+
+    return () => { cancelled = true; };
+  }, [project.slug, project.image, project.vimeoId]);
+
+  useEffect(() => {
+    setLocalReady(false);
+  }, [project.video, project.slug]);
+
+  useEffect(() => {
+    if (!hasLocalVideo) return;
+    const el = rootRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        const v = videoRef.current;
+        if (v) {
+          v.preload = 'auto';
+          v.load();
+        }
+      },
+      { rootMargin: '240px 0px', threshold: 0.01 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasLocalVideo, project.slug]);
 
   const handleMouseEnter = () => {
-    if (!hasVideo) return;
-    if (hasImage) setVideoVisible(true);
-    videoRef.current?.play().catch(() => {});
+    setHover(true);
+    if (hasLocalVideo) {
+      videoRef.current?.play().catch(() => {});
+      return;
+    }
+    if (vimeoOnlyPreview) setVimeoActive(true);
   };
 
   const handleMouseLeave = () => {
-    if (!hasVideo) return;
-    if (videoRef.current) {
-      videoRef.current.pause();
-      // Return to mid-video thumbnail (only for video-only cards)
-      videoRef.current.currentTime = 0;
+    setHover(false);
+    setVimeoActive(false);
+    setVimeoReady(false);
+    if (hasLocalVideo) {
+      const v = videoRef.current;
+      if (v) {
+        v.pause();
+        v.currentTime = 0;
+      }
     }
-    if (hasImage) setVideoVisible(false);
   };
+
+  const showPoster = Boolean(posterSrc);
+
+  const hidePoster =
+    (hasLocalVideo && hover && localReady) ||
+    (vimeoOnlyPreview && vimeoActive && vimeoReady);
 
   return (
     <Link
       to={`/work/${project.slug}`}
-      className="project-card"
+      className={`project-card${hover ? ' project-card--hover' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      <span ref={rootRef} className="project-card__io-target" aria-hidden />
+
       <div className="project-card__media-wrap">
-        {/* Static thumbnail — always visible when image is present */}
-        {hasImage && (
-          <img
-            src={project.image}
-            alt={project.name}
-            className="project-card__media project-card__media--img"
-            loading="lazy"
-            style={{ opacity: videoVisible ? 0 : 1 }}
+        {vimeoOnlyPreview && vimeoActive && (
+          <iframe
+            className="project-card__vimeo-iframe project-card__vimeo-iframe--stack"
+            src={vimeoPreviewSrc(project.vimeoId)}
+            title=""
+            allow="autoplay; fullscreen; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
+            tabIndex={-1}
+            onLoad={() => setVimeoReady(true)}
           />
         )}
 
-        {/* Video — crossfades over thumbnail on hover; or acts as sole media */}
-        {hasVideo && (
+        {hasLocalVideo && (
           <video
             ref={videoRef}
             className="project-card__media project-card__media--vid"
@@ -55,24 +126,30 @@ export default function ProjectCard({ project }) {
             muted
             loop
             playsInline
-            preload={hasImage ? 'none' : 'auto'}
-            style={{ opacity: hasImage ? (videoVisible ? 1 : 0) : 1 }}
-            onLoadedMetadata={(e) => {
-              if (!hasImage) e.target.currentTime = 0;
-            }}
+            preload="metadata"
+            onLoadedData={() => setLocalReady(true)}
+            onError={() => setLocalReady(false)}
           />
         )}
 
-        {/* Fallback when both null */}
-        {!hasImage && !hasVideo && (
+        {showPoster && (
+          <img
+            src={posterSrc}
+            alt={project.name}
+            className="project-card__media project-card__media--img project-card__media--poster"
+            loading="lazy"
+            decoding="async"
+            style={{ opacity: hidePoster ? 0 : 1 }}
+          />
+        )}
+
+        {!showPoster && !hasLocalVideo && !vimeoOnlyPreview && (
           <div className="project-card__media project-card__media--empty" />
         )}
       </div>
 
-      {/* Dark overlay on hover */}
-      <div className="project-card__hover-overlay" />
+      <div className="project-card__hover-overlay" aria-hidden />
 
-      {/* Bottom info bar */}
       <div className="project-card__info">
         <div className="project-card__meta">
           <p className="project-card__name">{project.name}</p>

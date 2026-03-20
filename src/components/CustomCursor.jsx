@@ -29,6 +29,12 @@ export default function CustomCursor() {
       mode = m;
       dot.dataset.mode   = m;
       glass.dataset.mode = m;
+      /* CLICK/PLAY: pegar el glass al cursor sin lag */
+      if (m === 'click' || m === 'play') {
+        gx = mx;
+        gy = my;
+        glass.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+      }
     };
 
     const onMove = (e) => { mx = e.clientX; my = e.clientY; };
@@ -51,14 +57,16 @@ export default function CustomCursor() {
     document.addEventListener('mouseout',  onOut);
 
     function animate() {
-      // Dot — snappy
-      dx += (mx - dx) * 0.22;
-      dy += (my - dy) * 0.22;
+      const onCard = mode === 'click' || mode === 'play';
+      const dotLerp  = onCard ? 0.55 : 0.28;
+      const glassLerp = onCard ? 0.72 : 0.16;
+
+      dx += (mx - dx) * dotLerp;
+      dy += (my - dy) * dotLerp;
       dot.style.transform = `translate(${dx - 7}px, ${dy - 7}px)`;
 
-      // Glass — smooth lag
-      gx += (mx - gx) * 0.12;
-      gy += (my - gy) * 0.12;
+      gx += (mx - gx) * glassLerp;
+      gy += (my - gy) * glassLerp;
       glass.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
 
       rafId = requestAnimationFrame(animate);

@@ -14,8 +14,10 @@ export const categories = [
       {
         slug: 'lastpay',
         name: 'LastPay',
+        vimeoId: '1175302458',
+        vimeoRatio: 'ratio-16-9',
         year: '2024',
-        tags: ['After Effects', 'Davinci Resolve'], // ← ajusta tags
+        tags: ['After Effects', 'Davinci Resolve'],
         image: null,
         video: '/assets/videos/motion-01.mp4',
         caseStudy: makeStudy(
@@ -28,8 +30,28 @@ export const categories = [
         ),
       },
       {
+        slug: 'hyperclaw-io',
+        name: 'HyperClaw.Io',
+        vimeoId: '1175302244',
+        vimeoRatio: 'ratio-16-9',
+        year: '2023',
+        tags: ['Blender', 'After Effects'],
+        image: null,
+        video: '/assets/videos/motion-06.mp4',
+        caseStudy: makeStudy(
+          'A generative, fractal-driven explosion sequence blending 3D simulation with 2D compositing.',
+          'Build a high-energy reveal that feels chaotic but is fully controlled and reproducible.',
+          'Studied fractal geometry to ensure the branching patterns felt mathematically authentic.',
+          'Blender particle simulations exported as VDB caches, then composited with glow and chromatic aberration in After Effects.',
+          'The "burst" moment is held for two frames longer than instinct suggests — that brief pause lets the eye register it.',
+          'Simulations give you unpredictability; craft gives you control. The best work lives where both meet.',
+        ),
+      },
+      {
         slug: 'wagmi-markets',
         name: 'Wagmi Markets',
+        vimeoId: '1175302343',
+        vimeoRatio: 'ratio-16-9',
         year: '2024',
         tags: ['After Effects', 'Davinci Resolve'],
         image: null,
@@ -44,40 +66,10 @@ export const categories = [
         ),
       },
       {
-        slug: 'sellhub',
-        name: 'SellHub',
-        year: '2023',
-        tags: ['After Effects', 'Illustrator'],
-        image: null,
-        video: '/assets/videos/motion-03.mp4',
-        caseStudy: makeStudy(
-          'A neon-soaked loop built for social content with an urban, night-time aesthetic.',
-          'Design a seamlessly looping animation optimised for mobile-first social feeds.',
-          'Inspired by night photography and light trails — the goal was to make static illustrations feel alive.',
-          'All artwork vectorised in Illustrator, then animated entirely in After Effects using shape layer expressions.',
-          'The loop point was engineered from the start, ensuring no visible seam on any platform.',
-          'Designing for the loop first forces more creative constraints — and constraints usually produce better work.',
-        ),
-      },
-      {
-        slug: 'screw-valley-bot',
-        name: 'Screw Valley Bot',
-        year: '2024',
-        tags: ['Cinema 4D', 'Redshift'],
-        image: null,
-        video: '/assets/videos/motion-04.mp4',
-        caseStudy: makeStudy(
-          'A 3D looping motion piece exploring planetary motion, scale, and light.',
-          'Create a mesmerising loop that could work as an ambient screen or a premium social asset.',
-          'References from NASA footage and astrophotography shaped the lighting and material language.',
-          'Full 3D scene in Cinema 4D with Redshift physically-based rendering and a custom camera rig.',
-          'Speed ramping around the orbit peak adds drama while keeping the overall feel calm and meditative.',
-          'Great loops are about inevitability — the viewer should feel the end arriving before it does.',
-        ),
-      },
-      {
         slug: 'valleyhub',
         name: 'ValleyHub',
+        vimeoId: '1175302610',
+        vimeoRatio: 'ratio-16-9',
         year: '2023',
         tags: ['After Effects', 'Photoshop'],
         image: null,
@@ -92,19 +84,21 @@ export const categories = [
         ),
       },
       {
-        slug: 'hyperclaw-io',
-        name: 'HyperClaw.Io',
-        year: '2023',
-        tags: ['Blender', 'After Effects'],
+        slug: 'screw-valley-bot',
+        name: 'Screw Valley Bot',
+        vimeoId: '1175302582',
+        vimeoRatio: 'ratio-16-9',
+        year: '2024',
+        tags: ['Cinema 4D', 'Redshift'],
         image: null,
-        video: '/assets/videos/motion-06.mp4',
+        video: '/assets/videos/motion-04.mp4',
         caseStudy: makeStudy(
-          'A generative, fractal-driven explosion sequence blending 3D simulation with 2D compositing.',
-          'Build a high-energy reveal that feels chaotic but is fully controlled and reproducible.',
-          'Studied fractal geometry to ensure the branching patterns felt mathematically authentic.',
-          'Blender particle simulations exported as VDB caches, then composited with glow and chromatic aberration in After Effects.',
-          'The "burst" moment is held for two frames longer than instinct suggests — that brief pause lets the eye register it.',
-          'Simulations give you unpredictability; craft gives you control. The best work lives where both meet.',
+          'A 3D looping motion piece exploring planetary motion, scale, and light.',
+          'Create a mesmerising loop that could work as an ambient screen or a premium social asset.',
+          'References from NASA footage and astrophotography shaped the lighting and material language.',
+          'Full 3D scene in Cinema 4D with Redshift physically-based rendering and a custom camera rig.',
+          'Speed ramping around the orbit peak adds drama while keeping the overall feel calm and meditative.',
+          'Great loops are about inevitability — the viewer should feel the end arriving before it does.',
         ),
       },
     ],
@@ -115,8 +109,10 @@ export const categories = [
     projects: [
       // ─── Proyecto 1 — carpeta 3d-01 ───────────────────────────────────
       {
-        slug: 'color-study',
-        name: 'Color Study', // ← cambia al nombre real
+        slug: 'level-design-unity',
+        name: 'Level Design — Unity',
+        vimeoId: '1175307968',
+        vimeoRatio: 'ratio-custom-47',
         year: '2024',
         tags: ['Cinema 4D', 'Redshift'], // ← ajusta tags
         image: null,
@@ -140,8 +136,10 @@ export const categories = [
       },
       // ─── Proyecto 2 — carpeta 3d-02 ───────────────────────────────────
       {
-        slug: 'render-series',
-        name: 'Render Series', // ← cambia al nombre real
+        slug: 'game-ready-prop-art',
+        name: 'Game-Ready Prop Art',
+        vimeoId: '1175307446',
+        vimeoRatio: 'ratio-16-9',
         year: '2024',
         tags: ['Blender', 'Cycles'], // ← ajusta tags
         image: '/assets/images/3d-02/RenderUno.webp',
@@ -171,8 +169,8 @@ export const categories = [
       },
       // ─── Proyecto 3 — carpeta 3d-03 ───────────────────────────────────
       {
-        slug: 'room-render',
-        name: 'Room Render', // ← cambia al nombre real
+        slug: 'aesthetic-house-render',
+        name: 'Aesthetic House Render',
         year: '2024',
         tags: ['Blender', 'Cycles'], // ← ajusta tags
         image: '/assets/images/3d-03/RoomRenderDay.webp',
@@ -197,78 +195,6 @@ export const categories = [
           ],
           takeaway:
             'El espacio vacío es tan importante como los objetos. Saber cuándo no agregar es la decisión más difícil.',
-        },
-      },
-      // ─── Proyecto 4 — carpeta 3d- ──────────────────────────────────────
-      {
-        slug: 'abstract-series',
-        name: 'Abstract Series', // ← cambia al nombre real
-        year: '2023',
-        tags: ['Cinema 4D', 'Redshift'], // ← ajusta tags
-        image: '/assets/images/3d-/image-1.webp',
-        video: '/assets/videos/3d-/1.mp4',
-        caseStudy: {
-          overview:
-            'Exploración abstracta de forma y espacio generada a través de múltiples ángulos y variaciones.',
-          goal: 'Definir un lenguaje visual propio a través de la experimentación libre, sin restricciones de cliente o brief.',
-          process: {
-            concept:
-              'Sin referencia externa — forma pura derivada de la manipulación directa de la geometría.',
-            execution:
-              'Cinema 4D para modelado paramétrico; Redshift para el tratamiento de luz y material.',
-            motion:
-              'Las variaciones se presentan como secuencia, creando una narrativa visual de evolución.',
-          },
-          gallery: [
-            '/assets/images/3d-/image-1.webp',
-            '/assets/images/3d-/2-1.webp',
-            '/assets/images/3d-/3-1.webp',
-            '/assets/images/3d-/4-1.webp',
-            '/assets/images/3d-/5-1.webp',
-          ],
-          takeaway:
-            'La exploración sin objetivo produce los descubrimientos más honestos.',
-        },
-      },
-      // ─── Proyecto 5 — MonitoC4D ────────────────────────────────────────
-      {
-        slug: 'monitor-c4d',
-        name: 'Monitor C4D', // ← cambia al nombre real
-        year: '2023',
-        tags: ['Cinema 4D'], // ← ajusta tags
-        image: null,
-        video: null,
-        caseStudy: {
-          overview:
-            'Modelado y render de producto de alta fidelidad de un monitor en Cinema 4D.',
-          goal: 'Practicar el pipeline completo de modelado hard-surface, UVs y render de producto.',
-          process: {
-            concept:
-              'Referencia directa del objeto real para asegurar proporciones y detalles correctos.',
-            execution:
-              'Modelado poligonal en Cinema 4D con atención a los bordes y la geometría de soporte.',
-            motion:
-              'Iluminación de estudio con fondo degradado para resaltar la forma del producto.',
-          },
-          gallery: [],
-          takeaway:
-            'El modelado de producto enseña precisión — cada milímetro incorrecto destruye la credibilidad del render.',
-        },
-      },
-      // ─── Proyecto 6 — placeholder (agrega tu propio) ──────────────────
-      {
-        slug: 'hollow-shell',
-        name: 'Coming Soon', // ← reemplaza con tu próximo proyecto
-        year: '2025',
-        tags: ['TBD'],
-        image: null,
-        video: null,
-        caseStudy: {
-          overview: 'Próximo proyecto en desarrollo.',
-          goal: '',
-          process: { concept: '', execution: '', motion: '' },
-          gallery: [],
-          takeaway: '',
         },
       },
     ],
