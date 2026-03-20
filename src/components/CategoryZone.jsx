@@ -1,6 +1,15 @@
+import { Link } from 'react-router-dom';
 import ProjectCard from './ProjectCard';
 
+const CATEGORY_ROUTES = {
+  'motion-graphics': '/motion-graphics',
+  '3d-art': '/3d',
+  'web': '/web-design',
+};
+
 export default function CategoryZone({ category, index, activeCard, isFirst }) {
+  const catRoute = CATEGORY_ROUTES[category.id];
+
   return (
     <div className="work__category-zone" data-index={index}>
       <div className="work__category">
@@ -11,11 +20,18 @@ export default function CategoryZone({ category, index, activeCard, isFirst }) {
               <p className="work__subheading">Selected projects I&apos;ve worked on</p>
             </div>
           )}
-          <h3 className="work__category-title">{category.title}</h3>
+          <div className="work__category-title-row">
+            <h3 className="work__category-title">{category.title}</h3>
+            {catRoute && (
+              <Link to={catRoute} className="work__category-view-all" aria-label={`View all ${category.title} projects`}>
+                View all →
+              </Link>
+            )}
+          </div>
           <div className="work__projects-track">
             <div className="work__projects">
               {category.projects.map(project => (
-                <ProjectCard key={project.slug} project={project} />
+                <ProjectCard key={project.slug} project={{ ...project, category: category.title, categoryId: category.id }} />
               ))}
             </div>
           </div>

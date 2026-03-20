@@ -174,7 +174,7 @@ export default function CaseStudyPage() {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://jozedzn.com' },
-      { '@type': 'ListItem', position: 2, name: 'Work',  item: 'https://jozedzn.com/#work' },
+      { '@type': 'ListItem', position: 2, name: 'Work',  item: 'https://jozedzn.com/work' },
       { '@type': 'ListItem', position: 3, name: project.name, item: pageUrl },
     ],
   };
@@ -301,7 +301,7 @@ export default function CaseStudyPage() {
         {/* ── Content wrapper ── */}
         <div className="cs__body">
 
-          <Link to="/" className="cs__back-nav">← All Work</Link>
+          <Link to="/work" className="cs__back-nav">← All Work</Link>
 
           {/* Overview */}
           {cs.overview && (

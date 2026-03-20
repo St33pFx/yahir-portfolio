@@ -5,59 +5,119 @@
   <!-- Homepage -->
   <url>
     <loc>https://jozedzn.com/</loc>
+    <lastmod>2026-03-19</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://jozedzn.com/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://jozedzn.com/?lang=es"/>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Motion Graphics -->
+  <!-- About -->
+  <url>
+    <loc>https://jozedzn.com/about</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Work index -->
+  <url>
+    <loc>https://jozedzn.com/work</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Category pages -->
+  <url>
+    <loc>https://jozedzn.com/motion-graphics</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/3d</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/web-design</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/game-dev</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://jozedzn.com/contact</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Motion Graphics case studies -->
   <url>
     <loc>https://jozedzn.com/work/lastpay</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jozedzn.com/work/hyperclaw-io</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jozedzn.com/work/wagmi-markets</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jozedzn.com/work/valleyhub</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jozedzn.com/work/screw-valley-bot</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- 3D Art -->
+  <!-- 3D Art case studies -->
   <url>
     <loc>https://jozedzn.com/work/level-design-unity</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://jozedzn.com/work/game-ready-prop-art</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://jozedzn.com/work/aesthetic-house-render</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Web -->
+  <!-- Web case studies -->
   <url>
     <loc>https://jozedzn.com/work/folio-2025</loc>
+    <lastmod>2026-03-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
