@@ -114,8 +114,8 @@ export default function SectionNav() {
           aria-label={`Go to ${sec.label}`}
           title={sec.label}
         >
-          <span className="section-nav__label">{sec.label}</span>
           <span className="section-nav__dot" />
+          <span className="section-nav__label">{sec.label}</span>
         </button>
       ))}
     </nav>
