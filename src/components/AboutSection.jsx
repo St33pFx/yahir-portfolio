@@ -1,30 +1,15 @@
 import { useLayoutEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
 import ScrollReveal from './ScrollReveal';
 
 const CELL_COLORS = ['#b3f381', '#e36085', '#f0fde6', '#b3f381'];
 
-const STATS = [
-  {
-    icon: '◈', rawValue: 1.8, suffix: 'M+', decimals: 1,
-    label: 'Content Reach',
-    desc: 'Hundreds of thousands\nto millions of views',
-  },
-  {
-    icon: '⚡', rawValue: 4, suffix: '+', decimals: 0,
-    label: 'Years Experience',
-    desc: 'Digital content,\nmotion, and web',
-  },
-  {
-    icon: '→', isText: true, textValue: 'Motion → Web',
-    label: 'Evolution',
-    desc: 'From motion graphics\nto web development',
-  },
-  {
-    icon: '✦', isText: true, textValue: 'Multi-Disc.',
-    label: 'Skillset',
-    desc: 'Motion, web &\ninteractive media',
-  },
+const STATS_BASE = [
+  { icon: '◈', rawValue: 1.8, suffix: 'M+', decimals: 1 },
+  { icon: '⚡', rawValue: 4,   suffix: '+',  decimals: 0 },
+  { icon: '→', isText: true, textValue: 'Motion → Web' },
+  { icon: '✦', isText: true, textValue: 'Multi-Disc.' },
 ];
 
 const STACK = [
@@ -38,6 +23,10 @@ const STACK = [
 ];
 
 export default function AboutSection() {
+  const { t } = useTranslation();
+  const statsI18n = t('about.stats', { returnObjects: true });
+  const STATS = STATS_BASE.map((s, i) => ({ ...s, label: statsI18n[i]?.label, desc: statsI18n[i]?.desc }));
+
   const sectionRef  = useRef(null);
   const titleRef    = useRef(null);
   const taglineRef  = useRef(null);
@@ -132,7 +121,7 @@ export default function AboutSection() {
 
         {/* ════ LEFT: identity + bio ════ */}
         <div className="about-full__left">
-          <span className="about__label">About</span>
+          <span className="about__label">{t('about.label')}</span>
 
           <h2 className="about__title" ref={titleRef} aria-label="Creative Developer">
             {['Creative', 'Developer'].map((word, wi) => (
@@ -145,11 +134,11 @@ export default function AboutSection() {
           </h2>
 
           <p className="about__tagline" ref={taglineRef}>
-            Web&nbsp;·&nbsp;Motion&nbsp;·&nbsp;Interactive
+            {t('about.tagline')}
           </p>
 
           <p className="about__location" ref={locationRef}>
-            Based in Mexico
+            {t('about.location')}
           </p>
 
           <div className="about__bio" ref={bioRef}>
@@ -162,8 +151,7 @@ export default function AboutSection() {
               baseRotation={2}
               wordAnimationEnd="bottom center"
             >
-              Creative developer focused on web experiences, motion, and interactive design.
-              I combine design, animation, and code to build digital experiences that leave an impression.
+              {t('about.bio')}
             </ScrollReveal>
           </div>
         </div>
@@ -173,8 +161,8 @@ export default function AboutSection() {
 
           {/* Stats header */}
           <div className="about-stats__header">
-            <span className="about-stats__eyebrow">Selected Highlights</span>
-            <h3 className="about-stats__heading">By the numbers.</h3>
+            <span className="about-stats__eyebrow">{t('about.highlights_eyebrow')}</span>
+            <h3 className="about-stats__heading">{t('about.highlights_heading')}</h3>
           </div>
 
           {/* 2×2 grid */}
@@ -203,15 +191,15 @@ export default function AboutSection() {
           <div className="hl-strip">
             <span className="hl-strip__divider" aria-hidden="true" />
             <div className="hl-strip__header">
-              <span className="highlights__eyebrow">Stack</span>
-              <h4 className="hl-strip__title">Tools &amp; Workflow.</h4>
+              <span className="highlights__eyebrow">{t('about.stack_eyebrow')}</span>
+              <h4 className="hl-strip__title">{t('about.stack_heading')}</h4>
             </div>
             <div className="hl-strip__rows">
               {STACK.map((g, gi) => (
                 <div key={gi} className={`hl-strip__row${g.explore ? ' hl-strip__row--explore' : ''}`}>
                   <div className="hl-strip__cat">
                     <span className="hl-strip__cat-icon" aria-hidden="true">{g.icon}</span>
-                    <span className="hl-strip__cat-name">{g.cat}</span>
+                    <span className="hl-strip__cat-name">{t(`about.stack_cats.${g.cat}`, g.cat)}</span>
                   </div>
                   <div className="tools__pills">
                     {g.tools.map((tool, ti) => (

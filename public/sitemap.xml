@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://jozedzn.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jozedzn.com/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://jozedzn.com/?lang=es"/>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Motion Graphics -->
+  <url>
+    <loc>https://jozedzn.com/work/lastpay</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/work/hyperclaw-io</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/work/wagmi-markets</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/work/valleyhub</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/work/screw-valley-bot</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 3D Art -->
+  <url>
+    <loc>https://jozedzn.com/work/level-design-unity</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/work/game-ready-prop-art</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jozedzn.com/work/aesthetic-house-render</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Web -->
+  <url>
+    <loc>https://jozedzn.com/work/folio-2025</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

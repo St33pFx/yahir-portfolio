@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /assets/fonts/
+Disallow: /assets/videos/
+
+Sitemap: https://jozedzn.com/sitemap.xml

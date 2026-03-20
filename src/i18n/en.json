@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "based": "Based in Mexico",
+    "disciplines": "Motion · 3D · Web · Games"
+  },
+  "work": {
+    "heading": "Work",
+    "subheading": "Selected projects I've worked on"
+  },
+  "about": {
+    "label": "About",
+    "tagline": "Web · Motion · Interactive",
+    "location": "Based in Mexico",
+    "bio": "Creative developer focused on web experiences, motion, and interactive design. I combine design, animation, and code to build digital experiences that leave an impression.",
+    "highlights_eyebrow": "Selected Highlights",
+    "highlights_heading": "By the numbers.",
+    "stack_eyebrow": "Stack",
+    "stack_heading": "Tools & Workflow.",
+    "stats": [
+      { "label": "Content Reach",    "desc": "Hundreds of thousands\nto millions of views" },
+      { "label": "Years Experience", "desc": "Digital content,\nmotion, and web" },
+      { "label": "Evolution",        "desc": "From motion graphics\nto web development" },
+      { "label": "Skillset",         "desc": "Motion, web &\ninteractive media" }
+    ],
+    "stack_cats": {
+      "Design":               "Design",
+      "Motion":               "Motion",
+      "3D":                   "3D",
+      "Web":                  "Web",
+      "Animation":            "Animation",
+      "Workflow":             "Workflow",
+      "Currently exploring":  "Currently exploring"
+    }
+  },
+  "connect": {
+    "heading_l1": "Have a project",
+    "heading_l2": "in mind?",
+    "heading_l3": "Let's build it.",
+    "label_contact": "Contact",
+    "label_social": "Social",
+    "footer_rights": "© 2026 All rights reserved.",
+    "footer_designed": "Designed By JozeDzn",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram"
+  }
+}

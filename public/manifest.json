@@ -1,0 +1,18 @@
+{
+  "name": "JozeDzn — Motion · 3D · Web · Games",
+  "short_name": "JozeDzn",
+  "description": "Creative Developer portfolio — Motion Graphics, 3D Art, Web Design & Game Development based in Mexico.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0c0c",
+  "theme_color": "#b3f381",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "en"
+}

@@ -1,6 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
+import './i18n';
 import './styles/style.css';
 
 history.scrollRestoration = 'manual';
@@ -18,9 +20,11 @@ async function boot() {
   // Mount React first so the component tree is ready
   const root = createRoot(document.getElementById('root'));
   root.render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </HelmetProvider>
   );
 
   // Wait for fonts to be fully loaded before dismissing loader.

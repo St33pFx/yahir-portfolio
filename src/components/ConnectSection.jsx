@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
 import TextPressure from './TextPressure';
 import SplitText from './SplitText';
@@ -18,6 +19,7 @@ function makeChars(text) {
 }
 
 export default function ConnectSection() {
+  const { t } = useTranslation();
   const sectionRef  = useRef(null);
   const bgRef       = useRef(null);
   const headingRef  = useRef(null);
@@ -84,9 +86,9 @@ export default function ConnectSection() {
           {/* ── Left: big heading ── */}
           <div className="connect__left">
             <h2 className="connect__heading" ref={headingRef}>
-              <span className="connect__line">{makeChars('Have a project')}</span>
-              <span className="connect__line">{makeChars('in mind?')}</span>
-              <span className="connect__line connect__line--green">{makeChars("Let's build it.")}</span>
+              <span className="connect__line">{makeChars(t('connect.heading_l1'))}</span>
+              <span className="connect__line">{makeChars(t('connect.heading_l2'))}</span>
+              <span className="connect__line connect__line--green">{makeChars(t('connect.heading_l3'))}</span>
             </h2>
           </div>
 
@@ -94,7 +96,7 @@ export default function ConnectSection() {
           <div className="connect__right" ref={rightRef}>
 
             <div className="connect__group">
-              <span className="connect__group-label">Contact</span>
+              <span className="connect__group-label">{t('connect.label_contact')}</span>
               <a href="mailto:hello@jozedzn.com" className="connect__email-link">
                 <TextPressure
                   text="hello@"
@@ -118,7 +120,7 @@ export default function ConnectSection() {
             </div>
 
             <div className="connect__group">
-              <span className="connect__group-label">Social</span>
+              <span className="connect__group-label">{t('connect.label_social')}</span>
               <div className="connect__socials">
                 <a
                   href="https://linkedin.com/in/jozedzn"
@@ -142,7 +144,7 @@ export default function ConnectSection() {
         {/* ── Footer ── */}
         <div className="connect__footer" ref={footerRef}>
           <SplitText
-            text="© 2026 All rights reserved."
+            text={t('connect.footer_rights')}
             tag="span"
             className="connect__footer-text"
             splitType="chars"

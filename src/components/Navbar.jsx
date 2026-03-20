@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AnimatedLink from './AnimatedLink';
 
 // Map nav link keys to the section IDs they correspond to
@@ -14,6 +15,12 @@ export default function Navbar() {
   const navRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
+  const toggleLang = () => {
+    const next = i18n.language.startsWith('es') ? 'en' : 'es';
+    i18n.changeLanguage(next);
+  };
 
   // Scroll-based: dark background + active link detection
   useEffect(() => {
@@ -87,24 +94,33 @@ export default function Navbar() {
 
       <div className={`navbar__links${mobileOpen ? ' mobile-open' : ''}`}>
         <AnimatedLink
-          text="Work"
+          text={t('nav.work')}
           href="#work"
           onClick={(e) => handleAnchorClick(e, '#work')}
           className={activeLink === 'work' ? 'nav-active' : ''}
         />
         <AnimatedLink
-          text="About"
+          text={t('nav.about')}
           href="#about"
           onClick={(e) => handleAnchorClick(e, '#about')}
           className={activeLink === 'about' ? 'nav-active' : ''}
         />
         <AnimatedLink
-          text="Contact"
+          text={t('nav.contact')}
           href="#connect"
           onClick={(e) => handleAnchorClick(e, '#connect')}
           className={activeLink === 'connect' ? 'nav-active' : ''}
         />
       </div>
+
+      <button
+        className="navbar__lang"
+        onClick={toggleLang}
+        aria-label="Switch language"
+        title={i18n.language.startsWith('es') ? 'Switch to English' : 'Cambiar a Español'}
+      >
+        {i18n.language.startsWith('es') ? 'EN' : 'ES'}
+      </button>
 
       <div
         className={`navbar__hamburger${mobileOpen ? ' active' : ''}`}

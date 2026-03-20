@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getProjectBySlug, getAdjacentProjects } from '../data/projects';
@@ -152,14 +153,67 @@ export default function CaseStudyPage() {
     );
   }
 
-  const cs = project.caseStudy || {};
-
   const addSection = (el) => {
     if (el && !sectionsRef.current.includes(el)) sectionsRef.current.push(el);
   };
 
+  const cs = project.caseStudy || {};
+  const pageTitle = `${project.name} — ${project.category} | JozeDzn`;
+  const pageDesc = cs.overview
+    ? cs.overview.slice(0, 155) + (cs.overview.length > 155 ? '…' : '')
+    : `${project.name} — a ${project.category} project by JozeDzn.`;
+  const pageUrl = `https://jozedzn.com/work/${project.slug}`;
+  const pageImage = project.image
+    ? `https://jozedzn.com${project.image}`
+    : project.vimeoId
+    ? `https://vumbnail.com/${project.vimeoId}.jpg`
+    : 'https://jozedzn.com/assets/images/og-image.png';
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://jozedzn.com' },
+      { '@type': 'ListItem', position: 2, name: 'Work',  item: 'https://jozedzn.com/#work' },
+      { '@type': 'ListItem', position: 3, name: project.name, item: pageUrl },
+    ],
+  };
+
+  const creativeWorkSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.name,
+    description: pageDesc,
+    url: pageUrl,
+    image: pageImage,
+    dateCreated: project.year,
+    creator: {
+      '@type': 'Person',
+      name: 'JozeDzn',
+      url: 'https://jozedzn.com',
+    },
+    genre: project.category,
+    keywords: project.tags?.join(', '),
+  };
+
   return (
     <>
+      <Helmet>
+        <html lang="en" />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <link rel="canonical" href={pageUrl} />
+        <meta property="og:type"        content="article" />
+        <meta property="og:url"         content={pageUrl} />
+        <meta property="og:title"       content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:image"       content={pageImage} />
+        <meta name="twitter:title"       content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+        <meta name="twitter:image"       content={pageImage} />
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(creativeWorkSchema)}</script>
+      </Helmet>
       <CustomCursor />
       <Navbar />
 

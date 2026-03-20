@@ -3,42 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- ── Primary meta ── -->
     <title>JozeDzn — Motion · 3D · Web · Games</title>
-    <meta
-      name="description"
-      content="JozeDzn portfolio — Motion Graphics, 3D Art, Web Design, and Game Development based in Mexico."
-    />
+    <meta name="description" content="JozeDzn — Creative Developer based in Mexico. Motion Graphics, 3D Art, Web Design, and Game Development." />
+    <meta name="author" content="JozeDzn" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href="https://jozedzn.com/" />
 
-    <!-- Preload critical fonts so they're ready before GSAP animates text -->
-    <link
-      rel="preload"
-      href="/assets/fonts/Bulevar-Regular.otf"
-      as="font"
-      type="font/otf"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/assets/fonts/N27-Regular.otf"
-      as="font"
-      type="font/otf"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/assets/fonts/N27-Light.otf"
-      as="font"
-      type="font/otf"
-      crossorigin
-    />
+    <!-- ── Open Graph ── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="JozeDzn" />
+    <meta property="og:url"         content="https://jozedzn.com/" />
+    <meta property="og:title"       content="JozeDzn — Motion · 3D · Web · Games" />
+    <meta property="og:description" content="Creative Developer based in Mexico. Motion Graphics, 3D Art, Web Design, and Game Development." />
+    <meta property="og:image"       content="https://jozedzn.com/assets/images/og-image.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"    content="JozeDzn portfolio — Creative Developer" />
+    <meta property="og:locale"       content="en_US" />
+    <meta property="og:locale:alternate" content="es_MX" />
 
+    <!-- ── Twitter / X Card ── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@jozedzn" />
+    <meta name="twitter:creator"     content="@jozedzn" />
+    <meta name="twitter:title"       content="JozeDzn — Motion · 3D · Web · Games" />
+    <meta name="twitter:description" content="Creative Developer based in Mexico. Motion Graphics, 3D Art, Web Design, and Game Development." />
+    <meta name="twitter:image"       content="https://jozedzn.com/assets/images/og-image.png" />
+
+    <!-- ── PWA / Theme ── -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0c0c0c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="JozeDzn" />
+
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- ── Structured data — Person + CreativeWork ── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "JozeDzn",
+      "url": "https://jozedzn.com",
+      "email": "hello@jozedzn.com",
+      "jobTitle": "Creative Developer",
+      "description": "Creative Developer based in Mexico specializing in Motion Graphics, 3D Art, Web Design, and Game Development.",
+      "image": "https://jozedzn.com/assets/images/og-image.png",
+      "sameAs": [
+        "https://linkedin.com/in/jozedzn",
+        "https://instagram.com/jozedzn"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "MX",
+        "addressRegion": "Mexico"
+      },
+      "knowsAbout": [
+        "Motion Graphics",
+        "3D Art",
+        "Web Development",
+        "Game Development",
+        "After Effects",
+        "Blender",
+        "Cinema 4D",
+        "React",
+        "GSAP",
+        "Unity"
+      ],
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "Creative Developer",
+        "occupationalCategory": "15-1255.00"
+      }
+    }
+    </script>
+
+    <!-- ── DNS prefetch for 3rd-party domains ── -->
+    <link rel="dns-prefetch" href="https://player.vimeo.com" />
+    <link rel="dns-prefetch" href="https://vimeo.com" />
+    <link rel="dns-prefetch" href="https://vumbnail.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap"
-      rel="stylesheet"
-    />
+
+    <!-- ── Preload critical fonts ── -->
+    <link rel="preload" href="/assets/fonts/Bulevar-Regular.otf"  as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/assets/fonts/N27-Regular.otf"      as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/assets/fonts/N27-Light.otf"        as="font" type="font/otf" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet" />
 
     <style>
       /* ── Inline critical styles so loader shows before any CSS bundle ── */
@@ -94,15 +151,9 @@
         animation: loader-grow 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
       @keyframes loader-grow {
-        0% {
-          width: 0%;
-        }
-        60% {
-          width: 85%;
-        }
-        100% {
-          width: 100%;
-        }
+        0%   { width: 0%; }
+        60%  { width: 85%; }
+        100% { width: 100%; }
       }
     </style>
   </head>

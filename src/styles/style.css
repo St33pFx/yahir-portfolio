@@ -120,7 +120,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -2250,6 +2249,31 @@ ul {
   line-height: 0.8;
 }
 
+/* Language switcher */
+.navbar__lang {
+  background: none;
+  border: 0.5px solid rgba(240, 253, 230, 0.3);
+  border-radius: 4px;
+  color: var(--color-text-link-default);
+  font-family: 'N27', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    color        0.25s ease,
+    background   0.25s ease;
+  flex-shrink: 0;
+}
+
+.navbar__lang:hover {
+  border-color: var(--color-text-heading-green);
+  color: var(--color-text-heading-green);
+  background: rgba(179, 243, 129, 0.06);
+}
+
 /* ═══════════════════════════════════════════
    MOBILE MENU
    ═══════════════════════════════════════════ */
@@ -2915,7 +2939,4 @@ ul {
     pointer-events: auto;
   }
 
-  html {
-    scroll-behavior: auto;
-  }
 }

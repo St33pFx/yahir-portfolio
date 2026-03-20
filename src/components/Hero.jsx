@@ -1,4 +1,5 @@
 import { useLayoutEffect, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
 import HeroEye from './HeroEye';
 
@@ -33,6 +34,7 @@ function SubtitleChars({ text }) {
 }
 
 export default function Hero() {
+  const { t } = useTranslation();
   const bgRef = useRef(null);
   const elementsRef = useRef(null);
   const titleRef = useRef(null);
@@ -230,10 +232,10 @@ export default function Hero() {
         {/* Subtitle — absolute, pinned to bottom of the hero */}
         <div className="hero__subtitle" ref={subtitleRef}>
           <span style={{ display: 'inline-block', overflow: 'hidden' }}>
-            <SubtitleChars text="Based in Mexico" />
+            <SubtitleChars text={t('hero.based')} />
           </span>
           <span style={{ display: 'inline-block', overflow: 'hidden' }}>
-            <SubtitleChars text="Web • Motion • Interactive" />
+            <SubtitleChars text={t('hero.disciplines')} />
           </span>
         </div>
       </div>
