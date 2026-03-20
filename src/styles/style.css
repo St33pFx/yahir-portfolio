@@ -2200,7 +2200,7 @@ ul {
 }
 
 .navbar__hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: translateY(7px) rotate(45deg);
 }
 
 .navbar__hamburger.active span:nth-child(2) {
@@ -2208,7 +2208,7 @@ ul {
 }
 
 .navbar__hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* ═══════════════════════════════════════════
@@ -2422,12 +2422,17 @@ ul {
 
   .navbar {
     width: calc(100% - 40px);
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .navbar__links {
-    position: fixed;
-    inset: 0;
-    background: rgba(12, 12, 12, 0.95);
+    position: absolute;
+    top: -16px;
+    left: -20px;
+    width: 100vw;
+    height: 100svh;
+    background: rgba(12, 12, 12, 0.98);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     flex-direction: column;
@@ -2435,15 +2440,17 @@ ul {
     justify-content: center;
     gap: 40px;
     font-size: 32px;
-    z-index: 100;
+    z-index: -1;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(-20px);
   }
 
   .navbar__links.mobile-open {
     opacity: 1;
     pointer-events: auto;
+    transform: translateY(0);
   }
 
   .navbar__hamburger {
@@ -2462,8 +2469,9 @@ ul {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    font-size: 14px;
-    bottom: clamp(16px, 3vh, 32px);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    bottom: clamp(24px, 4vh, 40px);
   }
 
   .work__inner {
@@ -2517,6 +2525,8 @@ ul {
     width: 100%;
     height: auto;
     max-height: none;
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
   }
 
   .work__carousel-dots {
@@ -2653,14 +2663,33 @@ ul {
   }
 
   .connect {
-    padding: 96px var(--page-padding) 32px;
+    padding: 96px var(--page-padding) 64px;
+    min-height: auto;
+    justify-content: flex-start;
+  }
+  .connect__layout {
+    gap: 48px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
   .connect__heading {
-    font-size: clamp(40px, 14vw, 100px);
+    font-size: clamp(28px, 9vw, 42px);
   }
   .connect__right {
     flex-direction: column;
-    gap: 24px;
+    gap: 32px;
+    width: 100%;
+    max-width: 100%;
+    align-items: flex-start;
+    overflow: hidden;
+  }
+  .connect__group {
+    width: 100%;
+  }
+  .connect__email-link {
+    width: 100%;
+    max-width: 100%;
   }
 
   .custom-cursor,

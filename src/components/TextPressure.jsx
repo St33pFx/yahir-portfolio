@@ -30,7 +30,9 @@ export default function TextPressure({
   const setSize = useCallback(() => {
     if (!containerRef.current || !titleRef.current) return;
     const { width: containerW } = containerRef.current.getBoundingClientRect();
-    let fontSize = containerW / (chars.length / 2);
+    // Use a more realistic character width factor (e.g., chars.length / 1.25)
+    // instead of chars.length / 2, because wide uppercase fonts take up much more space.
+    let fontSize = containerW / (chars.length / 1.15);
     fontSize = Math.max(fontSize, minFontSize);
     titleRef.current.style.fontSize = fontSize + 'px';
   }, [chars.length, minFontSize]);
