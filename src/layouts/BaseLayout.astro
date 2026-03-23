@@ -1,5 +1,6 @@
 ---
 import '../styles/style.css';
+import { Analytics } from '@vercel/analytics/react';
 
 export interface Props {
   title: string;
@@ -146,6 +147,8 @@ const allSchemas = [personSchema, ...extraSchemas];
   </div>
 
   <slot />
+
+  <Analytics client:load />
 
   <!-- Client-side i18n init (language detection from localStorage/navigator) -->
   <script>
