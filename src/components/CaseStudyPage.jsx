@@ -236,7 +236,7 @@ export default function CaseStudyPage({ slug }) {
         {/* ── Content wrapper ── */}
         <div className="cs__body">
 
-          <a href="/work" className="cs__back-nav">← All Work</a>
+          <a href={i18n.language?.startsWith('es') ? '/es/#work' : '/#work'} className="cs__back-nav">← All Work</a>
 
           {cs.overview && (
             <section className="cs__section cs__overview">
