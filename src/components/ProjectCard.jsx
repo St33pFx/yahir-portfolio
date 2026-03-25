@@ -7,9 +7,11 @@ import { fetchVimeoThumbnail, vimeoPreviewSrc } from '../utils/vimeo';
  * 2. Hover → preview en autoplay (MP4 local o iframe Vimeo).
  * 3. Click en la card → navega al case study (react-router Link).
  */
+const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches;
+
 function initialPoster(project) {
   if (project.image) return project.image;
-  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}_1920.jpg`;
+  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}_large.jpg`;
   return null;
 }
 
@@ -68,6 +70,7 @@ export default function ProjectCard({ project }) {
   }, [hasLocalVideo, project.slug]);
 
   const handleMouseEnter = () => {
+    if (isTouchDevice) return;
     setHover(true);
     if (hasLocalVideo) {
       videoRef.current?.play().catch(() => {});
@@ -77,6 +80,7 @@ export default function ProjectCard({ project }) {
   };
 
   const handleMouseLeave = () => {
+    if (isTouchDevice) return;
     setHover(false);
     setVimeoActive(false);
     setVimeoReady(false);
