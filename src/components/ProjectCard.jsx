@@ -11,7 +11,7 @@ const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover
 
 function initialPoster(project) {
   if (project.image) return project.image;
-  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}_large.jpg`;
+  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}.jpg`;
   return null;
 }
 
