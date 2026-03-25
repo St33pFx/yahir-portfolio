@@ -6,7 +6,9 @@
       "Bash(sed -n '2895,2915p' c:/Users/JozeDzn/Documents/yahir-folder/src/styles/style.css)",
       "Bash(xargs grep:*)",
       "Bash(npm install:*)",
-      "WebFetch(domain:tympanus.net)"
+      "WebFetch(domain:tympanus.net)",
+      "Bash(rtk npx:*)",
+      "Bash(npx astro:*)"
     ]
   }
 }
