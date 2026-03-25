@@ -2705,8 +2705,13 @@ ul {
   background: var(--color-text-link-default);
   transition:
     transform 0.3s ease,
-    opacity 0.3s ease;
+    opacity 0.3s ease,
+    background 0.3s ease;
   transform-origin: center;
+}
+
+.navbar__hamburger.active span {
+  background: #fff;
 }
 
 .navbar__hamburger.active span:nth-child(1) {
