@@ -16,7 +16,9 @@ export async function fetchVimeoThumbnail(vimeoId) {
     );
     if (!res.ok) throw new Error(String(res.status));
     const data = await res.json();
-    const url = data.thumbnail_url || null;
+    let url = data.thumbnail_url || null;
+    // Vimeo CDN allows swapping the _WxH suffix for any resolution
+    if (url) url = url.replace(/_\d+x\d+(\.\w+)$/, '_1920x1080$1');
     thumbCache.set(vimeoId, url);
     return url;
   } catch {

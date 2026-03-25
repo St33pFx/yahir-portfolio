@@ -9,7 +9,7 @@ import { fetchVimeoThumbnail, vimeoPreviewSrc } from '../utils/vimeo';
  */
 function initialPoster(project) {
   if (project.image) return project.image;
-  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}.jpg`;
+  if (project.vimeoId) return `https://vumbnail.com/${project.vimeoId}_1920.jpg`;
   return null;
 }
 

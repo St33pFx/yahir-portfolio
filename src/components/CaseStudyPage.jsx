@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getProjectBySlug, getAdjacentProjects } from '../data/projects';
@@ -10,6 +11,7 @@ import SplitText from './SplitText';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CaseStudyPage({ slug }) {
+  const { i18n } = useTranslation();
   const project = getProjectBySlug(slug);
   const { next } = getAdjacentProjects(slug);
 
@@ -26,6 +28,7 @@ export default function CaseStudyPage({ slug }) {
   const [heroVimeoReady, setHeroVimeoReady] = useState(false);
   const [heroThumb, setHeroThumb] = useState(null);
   const [tapHintDismissed, setTapHintDismissed] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   // Fetch HD thumbnail from Vimeo oEmbed (1920px) — start with low-res vumbnail as instant placeholder
   useEffect(() => {
@@ -74,10 +77,16 @@ export default function CaseStudyPage({ slug }) {
   }, []);
 
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') closeModal(); };
+    const gallery = project?.caseStudy?.gallery || [];
+    const onKey = (e) => {
+      if (e.key === 'Escape') { closeModal(); setLightboxIndex(null); }
+      if (lightboxIndex === null) return;
+      if (e.key === 'ArrowRight') setLightboxIndex((i) => (i + 1) % gallery.length);
+      if (e.key === 'ArrowLeft')  setLightboxIndex((i) => (i - 1 + gallery.length) % gallery.length);
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [closeModal]);
+  }, [closeModal, lightboxIndex, project]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -141,7 +150,9 @@ export default function CaseStudyPage({ slug }) {
     if (el && !sectionsRef.current.includes(el)) sectionsRef.current.push(el);
   };
 
-  const cs = project.caseStudy || {};
+  const lang = i18n.language?.startsWith('es') ? 'es' : 'en';
+  const csData = project.caseStudy || {};
+  const cs = { ...(csData[lang] || csData.en || csData), gallery: csData.gallery || [] };
 
   return (
     <>
@@ -344,8 +355,14 @@ export default function CaseStudyPage({ slug }) {
               />
               <div className="cs__gallery-grid">
                 {cs.gallery.map((src, i) => (
-                  <div key={i} className="cs__gallery-item">
+                  <div key={i} className="cs__gallery-item" onClick={() => setLightboxIndex(i)}>
                     <img src={src} alt={`${project.name} visual ${i + 1}`} loading="lazy" />
+                    <div className="cs__gallery-item__icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                      </svg>
+                      <span>Ver imagen</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -420,6 +437,31 @@ export default function CaseStudyPage({ slug }) {
         )}
 
       </main>
+
+      {/* ── Image Lightbox ── */}
+      {lightboxIndex !== null && cs.gallery?.length > 0 && (
+        <div className="cs__lightbox" onClick={() => setLightboxIndex(null)}>
+          <button className="cs__lightbox-close" onClick={() => setLightboxIndex(null)} aria-label="Close">✕</button>
+          <button
+            className="cs__lightbox-nav cs__lightbox-nav--prev"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i - 1 + cs.gallery.length) % cs.gallery.length); }}
+            aria-label="Previous"
+          >‹</button>
+          <div className="cs__lightbox-img-wrap" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={cs.gallery[lightboxIndex]}
+              alt={`${project.name} visual ${lightboxIndex + 1}`}
+              className="cs__lightbox-img"
+            />
+          </div>
+          <button
+            className="cs__lightbox-nav cs__lightbox-nav--next"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i + 1) % cs.gallery.length); }}
+            aria-label="Next"
+          >›</button>
+          <span className="cs__lightbox-counter">{lightboxIndex + 1} / {cs.gallery.length}</span>
+        </div>
+      )}
 
       {/* ── Video Modal ── */}
       {modalOpen && (project.vimeoId || project.video) && (

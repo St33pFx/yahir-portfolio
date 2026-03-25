@@ -5,7 +5,7 @@ import { getAllProjects, getProjectBySlug } from '../../data/projects';
 
 export function getStaticPaths() {
   return getAllProjects()
-    .filter(p => p.caseStudy?.overview)
+    .filter(p => p.caseStudy?.en?.overview || p.caseStudy?.es?.overview)
     .map(p => ({ params: { slug: p.slug }, props: { slug: p.slug } }));
 }
 
@@ -16,8 +16,9 @@ const pageTitle = project
   ? `${project.name} — ${project.category} | JozeDzn`
   : 'Work | JozeDzn';
 
-const pageDesc = project?.caseStudy?.overview
-  ? project.caseStudy.overview.slice(0, 155) + (project.caseStudy.overview.length > 155 ? '…' : '')
+const overviewText = project?.caseStudy?.en?.overview || project?.caseStudy?.es?.overview || '';
+const pageDesc = overviewText
+  ? overviewText.slice(0, 155) + (overviewText.length > 155 ? '…' : '')
   : `${project?.name} — a ${project?.category} project by JozeDzn.`;
 
 const pageImage = project?.image

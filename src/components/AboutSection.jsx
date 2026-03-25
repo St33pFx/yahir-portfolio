@@ -16,10 +16,10 @@ const STACK = [
   { icon: '◉', cat: 'Design',             tools: ['Figma', 'Photoshop'] },
   { icon: '▶', cat: 'Motion',             tools: ['After Effects', 'DaVinci Resolve', 'Premiere Pro'] },
   { icon: '◆', cat: '3D',                 tools: ['Blender', 'Maya', 'Substance Painter', 'ZBrush', 'Cinema 4D'] },
-  { icon: '⌨', cat: 'Web',                tools: ['HTML', 'CSS', 'JavaScript'] },
+  { icon: '⌨', cat: 'Web',                tools: ['HTML', 'CSS', 'JavaScript', 'React'] },
   { icon: '◎', cat: 'Animation',          tools: ['GSAP'] },
   { icon: '⟐', cat: 'Workflow',           tools: ['Git', 'GitHub', 'VS Code', 'Cursor'] },
-  { icon: '→', cat: 'Currently exploring',tools: ['React', 'Interactive web experiences'], explore: true },
+  { icon: '→', cat: 'Currently exploring',tools: ['Astro', 'Interactive web experiences'], explore: true },
 ];
 
 export default function AboutSection() {

@@ -20,7 +20,7 @@ const STACK = [
   {
     category: 'Web',
     icon: '⌨',
-    tools: ['HTML', 'CSS', 'JavaScript'],
+    tools: ['HTML', 'CSS', 'JavaScript', 'React'],
   },
   {
     category: 'Animation',
@@ -35,7 +35,7 @@ const STACK = [
   {
     category: 'Currently exploring',
     icon: '→',
-    tools: ['React', 'Interactive web experiences'],
+    tools: ['Astro', 'Interactive web experiences'],
     highlight: true,
   },
 ];
@@ -61,8 +61,17 @@ export default function ToolsSection() {
 
         const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-        tl.to([eyebrow, heading], { opacity: 1, y: 0, duration: 0.65, stagger: 0.1 });
-        tl.to(rows, { opacity: 1, x: 0, duration: 0.55, stagger: 0.07 }, '-=0.25');
+        tl.to([eyebrow, heading], {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          stagger: 0.1,
+        });
+        tl.to(
+          rows,
+          { opacity: 1, x: 0, duration: 0.55, stagger: 0.07 },
+          '-=0.25',
+        );
       },
       { threshold: 0.25 },
     );
@@ -77,7 +86,9 @@ export default function ToolsSection() {
         <div className="tools__left">
           <span className="tools__eyebrow">Stack</span>
           <h2 className="tools__heading">
-            Tools &amp;<br />Workflow.
+            Tools &amp;
+            <br />
+            Workflow.
           </h2>
           <p className="tools__sub">
             The tools I use to design, animate, and build digital experiences.
@@ -86,14 +97,24 @@ export default function ToolsSection() {
 
         <div className="tools__right">
           {STACK.map((group, gi) => (
-            <div key={gi} className={`tools__row${group.highlight ? ' tools__row--explore' : ''}`}>
+            <div
+              key={gi}
+              className={`tools__row${group.highlight ? ' tools__row--explore' : ''}`}
+            >
               <div className="tools__row-header">
-                <span className="tools__cat-icon" aria-hidden="true">{group.icon}</span>
+                <span className="tools__cat-icon" aria-hidden="true">
+                  {group.icon}
+                </span>
                 <span className="tools__cat-name">{group.category}</span>
               </div>
               <div className="tools__pills">
                 {group.tools.map((tool, ti) => (
-                  <span key={ti} className={`tools__pill${group.highlight ? ' tools__pill--explore' : ''}`}>{tool}</span>
+                  <span
+                    key={ti}
+                    className={`tools__pill${group.highlight ? ' tools__pill--explore' : ''}`}
+                  >
+                    {tool}
+                  </span>
                 ))}
               </div>
             </div>

@@ -1,25 +1,25 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './en.json';
 import es from './es.json';
 
+// Detect language from URL path instead of browser navigator
+// /es/* → Spanish, everything else → English
+const detectLangFromPath = () => {
+  if (typeof window === 'undefined') return 'en';
+  return window.location.pathname.startsWith('/es') ? 'es' : 'en';
+};
+
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
       en: { translation: en },
       es: { translation: es },
     },
+    lng: detectLangFromPath(),
     fallbackLng: 'en',
     supportedLngs: ['en', 'es'],
-    detection: {
-      order: ['querystring', 'localStorage', 'navigator'],
-      lookupQuerystring: 'lang',
-      lookupLocalStorage: 'jozedzn_lang',
-      caches: ['localStorage'],
-    },
     interpolation: {
       escapeValue: false,
     },
