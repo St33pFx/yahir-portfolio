@@ -794,61 +794,86 @@ ul {
 }
 
 /* ── BENTO GRID ── */
+/* ═══════════════════════════════════════════
+   DESKTOP DRAMATIC BENTO GRID
+   ═══════════════════════════════════════════ */
 .work__bento-clip {
   overflow: hidden;
   padding-bottom: clamp(48px, 6vw, 84px);
-  max-width: 70%;
+  max-width: 82%;
   margin-left: auto;
   margin-right: auto;
 }
 
-.work__bento {
+.bento {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(7px, 0.85vw, 11px);
+  grid-auto-rows: auto;
+  gap: clamp(6px, 0.6vw, 10px);
 }
 
-.work__bento-cell {
-  aspect-ratio: 4 / 3;
+.bento__cell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #111;
+  will-change: transform, opacity;
 }
 
-/* Asymmetric spans */
-.work__bento-cell:nth-child(1) {
-  grid-column: span 2;
-  aspect-ratio: 16 / 7;
-}
-.work__bento-cell:nth-child(2) {
-  grid-column: span 1;
-  aspect-ratio: 4 / 5;
-}
-.work__bento-cell:nth-child(3) {
-  grid-column: span 1;
-  aspect-ratio: 4 / 5;
-}
-.work__bento-cell:nth-child(4) {
-  grid-column: span 2;
-  aspect-ratio: 16 / 7;
-}
-.work__bento-cell:nth-child(5) {
-  grid-column: span 3;
-  aspect-ratio: 21 / 7;
-}
-.work__bento-cell:nth-child(6) {
-  grid-column: span 1;
-  aspect-ratio: 4 / 3;
-}
-.work__bento-cell:nth-child(7) {
-  grid-column: span 1;
-  aspect-ratio: 4 / 3;
-}
-.work__bento-cell:nth-child(8) {
-  grid-column: span 1;
-  aspect-ratio: 4 / 3;
+.bento__card-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
 }
 
-.work__bento-cell--hero {
-  grid-column: span 2;
-  aspect-ratio: 16 / 9;
+.bento__card-wrap .project-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Index number overlay ── */
+.bento__index {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 5;
+  font-family: 'N27', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: color 0.3s ease;
+}
+
+.bento__cell:hover .bento__index {
+  color: rgba(179, 243, 129, 0.8);
+}
+
+/* ── Hover lift effect ── */
+.bento__cell {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento__cell:hover {
+  transform: translateY(-4px) scale(1.008);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+
+/* ── Full-width showcase: special treatment ── */
+.bento__cell--f {
+  border-radius: 6px;
+}
+
+.bento__cell--f .bento__index {
+  font-size: 13px;
+  top: 16px;
+  left: 20px;
 }
 
 /* ═══════════════════════════════════════════
@@ -3208,11 +3233,25 @@ ul {
   .hero__subtitle {
     font-size: 18px;
   }
-  /* Desktop bento hidden on mobile (WorkSection renders mobile-work instead) */
   .work__bento-clip {
     max-width: 100%;
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Reset explicit grid positions for 2-col tablet layout */
+  .bento__cell {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  /* Make showcase span full width on tablet */
+  .bento__cell--f {
+    grid-column: 1 / -1 !important;
   }
 
   .project-card__hover-overlay {

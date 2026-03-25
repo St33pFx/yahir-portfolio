@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -8,7 +8,6 @@ import ProjectCard from './ProjectCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// All published projects (have a case study) with category info
 const allProjects = categories.flatMap(cat =>
   cat.projects
     .filter(p => p.caseStudy?.en?.overview || p.caseStudy?.es?.overview)
@@ -16,23 +15,30 @@ const allProjects = categories.flatMap(cat =>
 );
 
 /*
- * Mobile grid layout pattern (repeats every 4 items):
- * ┌─────────────────────────┐
- * │  FULL-WIDTH HERO        │  ← item 0: big cinematic
- * └─────────────────────────┘
- * ┌──────────┐ ┌────────────┐
- * │ PORTRAIT │ │  LANDSCAPE │  ← items 1 & 2: asymmetric pair
- * │          │ │            │
- * └──────────┘ └────────────┘
- * ┌─────────────────────────┐
- * │  EDITORIAL WIDE         │  ← item 3: cinematic letterbox
- * └─────────────────────────┘
+ * Desktop grid layout — dramatic asymmetric bento:
+ *
+ * ROW 1:  [──── HERO 2col ────] [TALL 3:4]
+ * ROW 2:  [SQ 1:1][── WIDE ──] [TALL cont]
+ * ROW 3:  [SQ cont][── CINEMA 2col ───────]
+ * ROW 4:  [────── FULL-WIDTH SHOWCASE ─────]
+ * ROW 5:  [PORTRAIT][LANDSCAPE] [SQUARE]
+ *
+ * 9 cells, each with unique aspect + position
  */
-const MOBILE_PATTERN = ['hero', 'portrait', 'landscape', 'cinematic'];
+const DESKTOP_LAYOUT = [
+  { id: 'a', col: '1 / 3', row: '1 / 2', ar: '16 / 7'  },    // hero wide
+  { id: 'b', col: '3 / 4', row: '1 / 3', ar: '3 / 4'   },    // tall portrait
+  { id: 'c', col: '1 / 2', row: '2 / 4', ar: '4 / 5'   },    // tall left
+  { id: 'd', col: '2 / 3', row: '2 / 3', ar: '16 / 9'  },    // landscape
+  { id: 'e', col: '2 / 4', row: '3 / 4', ar: '21 / 9'  },    // cinematic wide
+  { id: 'f', col: '1 / 4', row: '4 / 5', ar: '3 / 1'   },    // full-width showcase
+  { id: 'g', col: '1 / 2', row: '5 / 6', ar: '3 / 4'   },    // portrait
+  { id: 'h', col: '2 / 3', row: '5 / 6', ar: '16 / 10' },    // landscape
+  { id: 'i', col: '3 / 4', row: '5 / 6', ar: '1 / 1'   },    // square
+];
 
-function getMobileVariant(indexInPage) {
-  return MOBILE_PATTERN[indexInPage % MOBILE_PATTERN.length];
-}
+const MOBILE_PATTERN = ['hero', 'portrait', 'landscape', 'cinematic'];
+function getMobileVariant(i) { return MOBILE_PATTERN[i % MOBILE_PATTERN.length]; }
 
 export default function WorkSection() {
   const { t } = useTranslation();
@@ -50,10 +56,8 @@ export default function WorkSection() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Reset page when filter or layout changes
   useEffect(() => { setMobilePage(0); }, [activeFilter, isMobileLayout]);
 
-  // Scroll to top of work section after page change (after render)
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
@@ -66,78 +70,80 @@ export default function WorkSection() {
     }
   }, [mobilePage]);
 
-  // ── Desktop GSAP animations ──
+  // ── Desktop premium GSAP animations ──
   useGSAP(() => {
     if (isMobileLayout) return;
-    const bento = gridRef.current;
-    if (!bento) return;
-    const cells = Array.from(bento.querySelectorAll('.work__bento-cell'));
+    const grid = gridRef.current;
+    if (!grid) return;
+    const cells = Array.from(grid.querySelectorAll('.bento__cell'));
     if (!cells.length) return;
 
+    // Initial state: each cell hidden with unique transform
     cells.forEach((cell, i) => {
-      gsap.set(cell, { yPercent: i % 2 === 0 ? -30 : 30, opacity: 0, filter: 'blur(12px)' });
+      const direction = i % 3; // 0=left, 1=bottom, 2=right
+      gsap.set(cell, {
+        opacity: 0,
+        scale: 0.88,
+        y: direction === 1 ? 80 : 40,
+        x: direction === 0 ? -40 : direction === 2 ? 40 : 0,
+        filter: 'blur(8px)',
+      });
     });
 
+    // Staggered reveal on scroll
     ScrollTrigger.batch(cells, {
-      start: 'top 90%',
+      start: 'top 88%',
       once: true,
       onEnter: (batch) => {
-        batch.forEach((cell) => {
-          const i = cells.indexOf(cell);
+        batch.forEach((cell, bi) => {
           gsap.to(cell, {
-            yPercent: 0,
             opacity: 1,
+            scale: 1,
+            y: 0,
+            x: 0,
             filter: 'blur(0px)',
-            duration: 0.9,
-            delay: i * 0.06,
+            duration: 1.1,
+            delay: bi * 0.08,
             ease: 'power3.out',
           });
         });
       },
     });
 
-    // Parallax (desktop only)
-    [cells[0], cells[3]].forEach((cell) => {
-      if (!cell) return;
-      const travel = cell.offsetHeight * 0.25;
-      gsap.set(cell, { y: 0 });
-      ScrollTrigger.create({
-        trigger: cell,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1,
-        onUpdate: (self) => {
-          gsap.set(cell, { y: self.progress * travel });
+    // Image parallax inside each cell
+    cells.forEach((cell) => {
+      const media = cell.querySelector('.project-card__media-wrap');
+      if (!media) return;
+
+      const travel = 60;
+      gsap.set(media, { yPercent: -3 });
+
+      gsap.to(media, {
+        yPercent: 3,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: cell,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.6,
         },
       });
     });
 
-    // Image parallax
-    const travel = 80;
-    cells.forEach((cell) => {
-      const img = cell.querySelector('.project-card__media');
-      if (!img) return;
-      gsap.set(img, {
-        height: `calc(100% + ${travel}px)`,
-        top: -(travel / 2),
-        position: 'absolute',
-        width: '100%',
-        objectFit: 'cover',
+    // Subtle scale on the full-width showcase cell
+    const showcase = grid.querySelector('.bento__cell--f');
+    if (showcase) {
+      gsap.fromTo(showcase, { scale: 0.96 }, {
+        scale: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: showcase,
+          start: 'top bottom',
+          end: 'center center',
+          scrub: 0.8,
+        },
       });
-      gsap.fromTo(img,
-        { y: -(travel / 2) },
-        {
-          y: travel / 2,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: cell,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          },
-        }
-      );
-    });
+    }
 
   }, { scope: gridRef, dependencies: [activeFilter, isMobileLayout] });
 
@@ -146,16 +152,12 @@ export default function WorkSection() {
     if (!isMobileLayout) return;
     const grid = mobileGridRef.current;
     if (!grid) return;
-
     const items = Array.from(grid.querySelectorAll('.mobile-work__item'));
     if (!items.length) return;
 
     items.forEach((item) => {
-      const card = item.querySelector('.project-card');
       const index = item.querySelector('.mobile-work__index');
       const label = item.querySelector('.mobile-work__label');
-
-      // Card: scale up + opacity + clip-path reveal
       gsap.set(item, { opacity: 0 });
 
       ScrollTrigger.create({
@@ -164,35 +166,20 @@ export default function WorkSection() {
         once: true,
         onEnter: () => {
           const tl = gsap.timeline();
-
-          // Card reveal: clip from bottom
           tl.fromTo(item,
             { opacity: 0, y: 60, scale: 0.92 },
             { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out' },
             0
           );
-
-          // Index number slides in
           if (index) {
-            tl.fromTo(index,
-              { x: -20, opacity: 0 },
-              { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-              0.2
-            );
+            tl.fromTo(index, { x: -20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.2);
           }
-
-          // Label text fades in
           if (label) {
-            tl.fromTo(label,
-              { y: 10, opacity: 0 },
-              { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' },
-              0.3
-            );
+            tl.fromTo(label, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.3);
           }
         },
       });
     });
-
   }, { scope: mobileGridRef, dependencies: [activeFilter, mobilePage, isMobileLayout] });
 
   const filterOptions = [
@@ -208,9 +195,10 @@ export default function WorkSection() {
 
   const MOBILE_PER_PAGE = 4;
   const totalPages = Math.ceil(filtered.length / MOBILE_PER_PAGE);
-  const visibleProjects = isMobileLayout
+  const desktopProjects = filtered.slice(0, 9);
+  const visibleMobile = isMobileLayout
     ? filtered.slice(mobilePage * MOBILE_PER_PAGE, (mobilePage + 1) * MOBILE_PER_PAGE)
-    : filtered.slice(0, 8);
+    : [];
 
   return (
     <section className="work" id="work">
@@ -234,15 +222,31 @@ export default function WorkSection() {
           ))}
         </div>
 
-        {/* ── Desktop Bento Grid ── */}
+        {/* ── Desktop Dramatic Bento ── */}
         {!isMobileLayout && (
           <div className="work__bento-clip">
-            <div className="work__bento" ref={gridRef}>
-              {visibleProjects.map((project) => (
-                <div key={project.slug} className="work__bento-cell">
-                  <ProjectCard project={project} />
-                </div>
-              ))}
+            <div className="bento" ref={gridRef}>
+              {desktopProjects.map((project, i) => {
+                const layout = DESKTOP_LAYOUT[i];
+                if (!layout) return null;
+                const globalIdx = i + 1;
+                return (
+                  <div
+                    key={project.slug}
+                    className={`bento__cell bento__cell--${layout.id}`}
+                    style={{
+                      gridColumn: layout.col,
+                      gridRow: layout.row,
+                      aspectRatio: layout.ar,
+                    }}
+                  >
+                    <div className="bento__card-wrap">
+                      <ProjectCard project={project} />
+                    </div>
+                    <span className="bento__index">{String(globalIdx).padStart(2, '0')}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -251,21 +255,16 @@ export default function WorkSection() {
         {isMobileLayout && (
           <>
             <div className="mobile-work" ref={mobileGridRef}>
-              {visibleProjects.map((project, i) => {
+              {visibleMobile.map((project, i) => {
                 const variant = getMobileVariant(i);
                 const globalIdx = mobilePage * MOBILE_PER_PAGE + i + 1;
                 return (
-                  <div
-                    key={project.slug}
-                    className={`mobile-work__item mobile-work__item--${variant}`}
-                  >
+                  <div key={project.slug} className={`mobile-work__item mobile-work__item--${variant}`}>
                     <div className="mobile-work__card-wrap">
                       <ProjectCard project={project} />
                     </div>
                     <div className="mobile-work__meta">
-                      <span className="mobile-work__index">
-                        {String(globalIdx).padStart(2, '0')}
-                      </span>
+                      <span className="mobile-work__index">{String(globalIdx).padStart(2, '0')}</span>
                       <div className="mobile-work__label">
                         <span className="mobile-work__name">{project.name}</span>
                         <span className="mobile-work__cat">{project.category}</span>
