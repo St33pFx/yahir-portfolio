@@ -2993,7 +2993,7 @@ ul {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
-    padding: 0 28px clamp(56px, 11svh, 96px);
+    padding: 0 28px max(clamp(56px, 11svh, 96px), calc(env(safe-area-inset-bottom) + 64px));
     gap: 0;
     font-family: 'Bulevar', serif;
     font-weight: 400;
