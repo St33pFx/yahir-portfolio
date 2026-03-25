@@ -35,6 +35,17 @@ export default function ScrollReveal({
     const el = containerRef.current;
     if (!el) return;
 
+    // On touch/mobile devices, skip scrub animation — show text immediately
+    const isMobile = window.matchMedia('(hover: none), (max-width: 768px)').matches;
+    if (isMobile) {
+      el.querySelectorAll('.sr-word').forEach(w => {
+        w.style.opacity = '1';
+        w.style.filter = 'blur(0px)';
+      });
+      gsap.set(el, { rotate: 0 });
+      return;
+    }
+
     const scroller =
       scrollContainerRef?.current ? scrollContainerRef.current : window;
 
