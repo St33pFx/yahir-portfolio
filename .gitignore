@@ -19,6 +19,9 @@ Desktop.ini
 *.swo
 *~
 
+# Claude Code
+.claude/
+
 # IDE / Editor
 .vscode/
 .idea/
