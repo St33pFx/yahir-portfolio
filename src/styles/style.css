@@ -2880,8 +2880,8 @@ ul {
   }
   .work__bento-clip {
     max-width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 0;
+    padding-right: 0;
   }
   .work__bento {
     grid-template-columns: repeat(2, 1fr);
@@ -2901,7 +2901,7 @@ ul {
   .work__bento-cell:nth-child(8) {
     grid-column: span 1;
     aspect-ratio: 4 / 3;
-    height: calc((50vw - 21px) * 3 / 4);
+    height: calc(((100vw - 64px) / 2) * 3 / 4);
     position: relative;
   }
 
@@ -3312,6 +3312,11 @@ ul {
   .cs__hero-video {
     cursor: pointer !important;
   }
+
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
 }
 
 /* ═══════════════════════════════════════════
@@ -3319,8 +3324,8 @@ ul {
    ═══════════════════════════════════════════ */
 @media (max-width: 480px) {
   .work__bento-clip {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 0;
+    padding-right: 0;
   }
   .work__bento {
     grid-template-columns: 1fr;
@@ -3338,7 +3343,7 @@ ul {
   .work__bento-cell:nth-child(8) {
     grid-column: span 1;
     aspect-ratio: 16 / 9;
-    height: calc((100vw - 24px) * 9 / 16);
+    height: calc((100vw - 40px) * 9 / 16);
   }
 
   .project-card {
