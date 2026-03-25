@@ -130,7 +130,7 @@ export default function ConnectSection() {
                 >LinkedIn</a>
                 <span className="connect__divider">/</span>
                 <a
-                  href="https://instagram.com/jozedzn"
+                  href="https://instagram.com/jozemotion"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="connect__social-link"
