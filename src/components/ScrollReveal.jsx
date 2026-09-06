@@ -1,6 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { shouldReduceMotion } from '../utils/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,8 +37,9 @@ export default function ScrollReveal({
     if (!el) return;
 
     // On touch/mobile devices, skip scrub animation — show text immediately
-    const isMobile = window.matchMedia('(hover: none), (max-width: 768px)').matches;
-    if (isMobile) {
+    const shouldSkipMotion = window.matchMedia('(hover: none), (max-width: 768px)').matches
+      || shouldReduceMotion();
+    if (shouldSkipMotion) {
       el.querySelectorAll('.sr-word').forEach(w => {
         w.style.opacity = '1';
         w.style.filter = 'blur(0px)';

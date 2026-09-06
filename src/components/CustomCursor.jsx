@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
+import { shouldReduceMotion } from '../utils/motion';
 
 export default function CustomCursor() {
   const dotRef    = useRef(null);
   const glassRef  = useRef(null);
 
   useEffect(() => {
-    if (window.matchMedia('(max-width: 768px)').matches) return;
+    if (window.matchMedia('(max-width: 768px), (hover: none), (pointer: coarse)').matches || shouldReduceMotion()) return;
 
     const dot   = dotRef.current;
     const glass = glassRef.current;

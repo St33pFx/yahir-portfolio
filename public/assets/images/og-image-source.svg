@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">JozeDzn — 3D Artist and Motion Designer</title>
+  <desc id="desc">JozeDzn portfolio social preview in green, pink and black.</desc>
+  <defs>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M36 0H0V36" fill="none" stroke="#f0fde6" stroke-opacity=".045"/>
+    </pattern>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b3f381" stop-opacity=".22"/>
+      <stop offset=".55" stop-color="#b3f381" stop-opacity="0"/>
+      <stop offset="1" stop-color="#e36085" stop-opacity=".18"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0c0c0c"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1020" cy="120" r="330" fill="url(#glow)"/>
+  <path d="M70 82H1130M70 548H1130" stroke="#f0fde6" stroke-opacity=".18"/>
+  <text x="70" y="145" fill="#e36085" font-family="Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="6">PORTFOLIO / MEXICO</text>
+  <text x="64" y="355" fill="#b3f381" font-family="Arial Black, Arial, sans-serif" font-size="150" font-weight="900" letter-spacing="-8">JOZEDZN</text>
+  <text x="72" y="430" fill="#f0fde6" font-family="Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="5">3D ARTIST · MOTION DESIGNER</text>
+  <text x="72" y="505" fill="#f0fde6" fill-opacity=".58" font-family="Arial, sans-serif" font-size="22" letter-spacing="4">HARD SURFACE · MOTION · INTERACTIVE</text>
+  <circle cx="1085" cy="485" r="28" fill="none" stroke="#e36085" stroke-width="2"/>
+  <circle cx="1085" cy="485" r="6" fill="#e36085"/>
+</svg>

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+import { createI18nInstance } from '../i18n';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getProjectBySlug, getAdjacentProjects } from '../data/projects';
@@ -7,14 +8,26 @@ import { vimeoModalPlayerSrc, fetchVimeoThumbnail } from '../utils/vimeo';
 import Navbar from './Navbar';
 import CustomCursor from './CustomCursor';
 import SplitText from './SplitText';
+import { shouldReduceMotion } from '../utils/motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function CaseStudyPage({ slug }) {
-  const { i18n } = useTranslation();
-  const project = getProjectBySlug(slug);
-  const { next } = getAdjacentProjects(slug);
+export default function CaseStudyPage({ slug, initialLang = 'en' }) {
+  const pageI18n = useMemo(() => createI18nInstance(initialLang), [initialLang]);
 
+  return (
+    <I18nextProvider i18n={pageI18n}>
+      <CaseStudyContent slug={slug} />
+    </I18nextProvider>
+  );
+}
+
+function CaseStudyContent({ slug }) {
+  const { t, i18n } = useTranslation();
+  const project = useMemo(() => getProjectBySlug(slug), [slug]);
+  const { next } = useMemo(() => getAdjacentProjects(slug), [slug]);
+
+  const mainRef     = useRef(null);
   const heroRef     = useRef(null);
   const titleRef    = useRef(null);
   const metaRef     = useRef(null);
@@ -29,6 +42,10 @@ export default function CaseStudyPage({ slug }) {
   const [heroThumb, setHeroThumb] = useState(null);
   const [tapHintDismissed, setTapHintDismissed] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const lang = i18n.language?.startsWith('es') ? 'es' : 'en';
+  const homeBase = lang === 'es' ? '/es/' : '/';
+  const workBase = lang === 'es' ? '/es/work' : '/work';
+  const reduceMotion = typeof window !== 'undefined' && shouldReduceMotion();
 
   // Fetch HD thumbnail from Vimeo oEmbed (1920px) — start with low-res vumbnail as instant placeholder
   useEffect(() => {
@@ -86,7 +103,16 @@ export default function CaseStudyPage({ slug }) {
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [closeModal, lightboxIndex, project]);
+  }, [closeModal, lightboxIndex, project?.caseStudy?.gallery]);
+
+  useEffect(() => {
+    if (!modalOpen && lightboxIndex === null) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [modalOpen, lightboxIndex]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -99,7 +125,7 @@ export default function CaseStudyPage({ slug }) {
       navbar.style.transform = 'translateX(-50%)';
     }
 
-    if (!project) return;
+    if (!project || reduceMotion) return undefined;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -128,10 +154,10 @@ export default function CaseStudyPage({ slug }) {
           }
         );
       });
-    });
+    }, mainRef);
 
     return () => ctx.revert();
-  }, [slug, project]);
+  }, [slug, project, reduceMotion]);
 
   if (!project) {
     return (
@@ -139,8 +165,8 @@ export default function CaseStudyPage({ slug }) {
         <CustomCursor />
         <Navbar />
         <div className="cs-not-found">
-          <h1>Project not found</h1>
-          <a href="/">← Back to Home</a>
+          <h1>{t('caseStudy.project_not_found')}</h1>
+          <a href={homeBase}>← {t('caseStudy.back_home')}</a>
         </div>
       </>
     );
@@ -150,7 +176,6 @@ export default function CaseStudyPage({ slug }) {
     if (el && !sectionsRef.current.includes(el)) sectionsRef.current.push(el);
   };
 
-  const lang = i18n.language?.startsWith('es') ? 'es' : 'en';
   const csData = project.caseStudy || {};
   const cs = { ...(csData[lang] || csData.en || csData), gallery: csData.gallery || [] };
 
@@ -159,13 +184,25 @@ export default function CaseStudyPage({ slug }) {
       <CustomCursor />
       <Navbar />
 
-      <main className="cs">
+      <main className="cs" id="main-content" ref={mainRef}>
 
         {/* ── Hero ── */}
         <section className="cs__hero" ref={heroRef}>
           <div
             className="cs__hero-media"
             onClick={project.vimeoId ? openModal : project.video ? openModal : undefined}
+            onKeyDown={(event) => {
+              if (!(project.vimeoId || project.video)) return;
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openModal();
+              }
+            }}
+            role={(project.vimeoId || project.video) ? 'button' : undefined}
+            tabIndex={(project.vimeoId || project.video) ? 0 : undefined}
+            aria-label={(project.vimeoId || project.video)
+              ? t('caseStudy.open_project_video', { project: project.name })
+              : undefined}
             style={(project.vimeoId || project.video) ? { cursor: 'none' } : undefined}
           >
             {project.vimeoId ? (
@@ -173,7 +210,7 @@ export default function CaseStudyPage({ slug }) {
                 <iframe
                   ref={heroIframeRef}
                   className="cs__hero-video cs__hero-iframe"
-                  src={`https://player.vimeo.com/video/${project.vimeoId}?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1&api=1`}
+                  src={`https://player.vimeo.com/video/${project.vimeoId}?background=1&autoplay=${reduceMotion ? 0 : 1}&loop=1&byline=0&title=0&muted=1&api=1`}
                   frameBorder="0"
                   allow="autoplay; fullscreen"
                   referrerPolicy="strict-origin-when-cross-origin"
@@ -196,14 +233,23 @@ export default function CaseStudyPage({ slug }) {
                 ref={videoRef}
                 className="cs__hero-video"
                 src={project.video}
-                autoPlay muted loop playsInline
+                autoPlay={!reduceMotion} muted loop playsInline
               />
+            ) : project.image ? (
+              <picture className="cs__hero-picture">
+                {project.mobileImage && <source media="(max-width: 768px)" srcSet={project.mobileImage} />}
+                <img
+                  src={project.image}
+                  alt={project.name}
+                  className="cs__hero-img"
+                  onLoad={() => ScrollTrigger.refresh()}
+                />
+              </picture>
             ) : (
-              <img
-                src={project.image}
-                alt={project.name}
-                className="cs__hero-img"
-              />
+              <div className="cs__hero-placeholder" aria-label={project.name}>
+                <span>{project.name}</span>
+                <small>{project.tags?.join(' · ') || project.category}</small>
+              </div>
             )}
             <div className="cs__hero-vignette" />
 
@@ -215,18 +261,21 @@ export default function CaseStudyPage({ slug }) {
                     <path d="M1 1.5L17 10L1 18.5V1.5Z" fill="currentColor" />
                   </svg>
                 </div>
-                <span className="cs__tap-hint__label">Tap to watch with sound</span>
+                <span className="cs__tap-hint__label">{t('caseStudy.watch_sound')}</span>
               </div>
             )}
           </div>
 
           <div className="cs__hero-content">
             <div ref={titleRef}>
-              <p className="cs__category-label">{project.category} / {project.year}</p>
+              <p className="cs__category-label">
+                {t(`work.categories.${project.categoryId}`, project.category)} / {project.year}
+                {project.wip ? ` / ${t('work.wip')}` : ''}
+              </p>
               <h1 className="cs__title">{project.name}</h1>
             </div>
             <div className="cs__hero-tags" ref={metaRef}>
-              {project.tags.map(tag => (
+              {(project.tags || []).map(tag => (
                 <span key={tag} className="cs__tag">{tag}</span>
               ))}
             </div>
@@ -236,12 +285,12 @@ export default function CaseStudyPage({ slug }) {
         {/* ── Content wrapper ── */}
         <div className="cs__body">
 
-          <a href={i18n.language?.startsWith('es') ? '/es/#work' : '/#work'} className="cs__back-nav">← All Work</a>
+          <a href={`${homeBase}#work`} className="cs__back-nav">← {t('caseStudy.all_work')}</a>
 
           {cs.overview && (
             <section className="cs__section cs__overview">
               <SplitText
-                text="Overview"
+                text={t('caseStudy.overview')}
                 tag="span"
                 className="cs__section-label"
                 splitType="chars"
@@ -274,7 +323,7 @@ export default function CaseStudyPage({ slug }) {
           {cs.goal && (
             <section className="cs__section cs__goal">
               <SplitText
-                text="Goal"
+                text={t('caseStudy.goal')}
                 tag="span"
                 className="cs__section-label"
                 splitType="chars"
@@ -307,7 +356,7 @@ export default function CaseStudyPage({ slug }) {
           {cs.process && (
             <section className="cs__section cs__process" ref={addSection}>
               <SplitText
-                text="Process"
+                text={t('caseStudy.process')}
                 tag="span"
                 className="cs__section-label"
                 splitType="chars"
@@ -322,17 +371,45 @@ export default function CaseStudyPage({ slug }) {
               />
               <div className="cs__process-grid">
                 <div className="cs__process-block">
-                  <h3 className="cs__process-heading">Concept</h3>
+                  <h3 className="cs__process-heading">{t('caseStudy.concept')}</h3>
                   <p>{cs.process.concept}</p>
                 </div>
                 <div className="cs__process-block">
-                  <h3 className="cs__process-heading">Execution</h3>
+                  <h3 className="cs__process-heading">{t('caseStudy.execution')}</h3>
                   <p>{cs.process.execution}</p>
                 </div>
                 <div className="cs__process-block cs__process-block--full">
-                  <h3 className="cs__process-heading">Motion &amp; Timing</h3>
+                  <h3 className="cs__process-heading">{t('caseStudy.motion')}</h3>
                   <p>{cs.process.motion}</p>
                 </div>
+              </div>
+            </section>
+          )}
+
+          {cs.sections?.length > 0 && (
+            <section className="cs__section cs__process" ref={addSection}>
+              <SplitText
+                text={t('caseStudy.process')}
+                tag="span"
+                className="cs__section-label"
+                splitType="chars"
+                from={{ opacity: 0, y: 16 }}
+                to={{ opacity: 1, y: 0 }}
+                delay={30}
+                duration={0.7}
+                ease="power3.out"
+                threshold={0.15}
+                rootMargin="0px"
+                textAlign="left"
+              />
+              <div className="cs__story-grid">
+                {cs.sections.map((section, index) => (
+                  <article className="cs__story-block" key={`${section.title}-${index}`}>
+                    <span className="cs__story-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                    <h3 className="cs__process-heading">{section.title}</h3>
+                    <p>{section.body}</p>
+                  </article>
+                ))}
               </div>
             </section>
           )}
@@ -340,7 +417,7 @@ export default function CaseStudyPage({ slug }) {
           {cs.gallery && cs.gallery.length > 0 && (
             <section className="cs__section cs__gallery" ref={addSection}>
               <SplitText
-                text="Visuals"
+                text={t('caseStudy.visuals')}
                 tag="span"
                 className="cs__section-label"
                 splitType="chars"
@@ -355,15 +432,26 @@ export default function CaseStudyPage({ slug }) {
               />
               <div className="cs__gallery-grid">
                 {cs.gallery.map((src, i) => (
-                  <div key={i} className="cs__gallery-item" onClick={() => setLightboxIndex(i)}>
-                    <img src={src} alt={`${project.name} visual ${i + 1}`} loading="lazy" />
+                  <button
+                    type="button"
+                    key={i}
+                    className="cs__gallery-item"
+                    onClick={() => setLightboxIndex(i)}
+                    aria-label={t('caseStudy.open_visual', { project: project.name, number: i + 1 })}
+                  >
+                    <img
+                      src={src}
+                      alt={t('caseStudy.visual_alt', { project: project.name, number: i + 1 })}
+                      loading="lazy"
+                      onLoad={() => ScrollTrigger.refresh()}
+                    />
                     <div className="cs__gallery-item__icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
                       </svg>
-                      <span>Ver imagen</span>
+                      <span>{t('caseStudy.view_image')}</span>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </section>
@@ -372,7 +460,7 @@ export default function CaseStudyPage({ slug }) {
           {cs.takeaway && (
             <section className="cs__section cs__takeaway">
               <SplitText
-                text="Takeaway"
+                text={cs.takeawayLabel || t('caseStudy.takeaway')}
                 tag="span"
                 className="cs__section-label"
                 splitType="chars"
@@ -406,15 +494,15 @@ export default function CaseStudyPage({ slug }) {
 
         {/* ── Next Project ── */}
         {next ? (
-          <a href={`/work/${next.slug}`} className="cs__next">
+          <a href={`${workBase}/${next.slug}`} className="cs__next">
             <div className="cs__next-inner">
-              <span className="cs__next-label">Next Project</span>
+              <span className="cs__next-label">{t('caseStudy.next')}</span>
               <div className="cs__next-media">
                 {next.video ? (
                   <video
                     src={next.video}
                     poster={next.image || (next.vimeoId ? `https://vumbnail.com/${next.vimeoId}_large.jpg` : undefined)}
-                    muted loop playsInline autoPlay
+                    muted loop playsInline autoPlay={!reduceMotion}
                     className="cs__next-img"
                   />
                 ) : next.image ? (
@@ -432,7 +520,7 @@ export default function CaseStudyPage({ slug }) {
           </a>
         ) : (
           <div className="cs__next cs__next--end">
-            <a href="/" className="cs__back-home">← Back to Home</a>
+            <a href={homeBase} className="cs__back-home">← {t('caseStudy.back_home')}</a>
           </div>
         )}
 
@@ -440,24 +528,30 @@ export default function CaseStudyPage({ slug }) {
 
       {/* ── Image Lightbox ── */}
       {lightboxIndex !== null && cs.gallery?.length > 0 && (
-        <div className="cs__lightbox" onClick={() => setLightboxIndex(null)}>
-          <button className="cs__lightbox-close" onClick={() => setLightboxIndex(null)} aria-label="Close">✕</button>
+        <div
+          className="cs__lightbox"
+          onClick={() => setLightboxIndex(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('caseStudy.visual_alt', { project: project.name, number: lightboxIndex + 1 })}
+        >
+          <button className="cs__lightbox-close" onClick={() => setLightboxIndex(null)} aria-label={t('caseStudy.close')}>✕</button>
           <button
             className="cs__lightbox-nav cs__lightbox-nav--prev"
             onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i - 1 + cs.gallery.length) % cs.gallery.length); }}
-            aria-label="Previous"
+            aria-label={t('caseStudy.previous')}
           >‹</button>
           <div className="cs__lightbox-img-wrap" onClick={(e) => e.stopPropagation()}>
             <img
               src={cs.gallery[lightboxIndex]}
-              alt={`${project.name} visual ${lightboxIndex + 1}`}
+              alt={t('caseStudy.visual_alt', { project: project.name, number: lightboxIndex + 1 })}
               className="cs__lightbox-img"
             />
           </div>
           <button
             className="cs__lightbox-nav cs__lightbox-nav--next"
             onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i + 1) % cs.gallery.length); }}
-            aria-label="Next"
+            aria-label={t('caseStudy.next_image')}
           >›</button>
           <span className="cs__lightbox-counter">{lightboxIndex + 1} / {cs.gallery.length}</span>
         </div>
@@ -469,8 +563,11 @@ export default function CaseStudyPage({ slug }) {
           className="cs__modal"
           ref={modalRef}
           onClick={(e) => { if (e.target === modalRef.current) closeModal(); }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('caseStudy.video_dialog', { project: project.name })}
         >
-          <button className="cs__modal-close" onClick={closeModal} aria-label="Close">✕</button>
+          <button className="cs__modal-close" onClick={closeModal} aria-label={t('caseStudy.close')}>✕</button>
 
           {project.vimeoId ? (
             <div

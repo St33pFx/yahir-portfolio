@@ -1,98 +1,56 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { shouldReduceMotion } from '../utils/motion';
 
-const SECTIONS = [
-  { label: 'Home',       id: 'hero' },
-  { label: 'Motion',     zone: 0 },
-  { label: '3D Art',     zone: 1 },
-  { label: 'Web',        zone: 2 },
-  { label: 'About',   id: 'about' },
-  { label: 'Connect', id: 'connect' },
-];
+function scrollToSection(id) {
+  const element = document.getElementById(id);
+  if (!element) return;
 
-function eioQuart(t) {
-  return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+  const reducedMotion = shouldReduceMotion();
+  if (window.__lenis && !reducedMotion) {
+    window.__lenis.scrollTo(element, { duration: 1 });
+    return;
+  }
+
+  element.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
 }
-
-function smoothScrollTo(el, duration = 750) {
-  if (!el) return;
-  const targetY = el.getBoundingClientRect().top + window.scrollY;
-  const startY = window.scrollY;
-  const dist = targetY - startY;
-  if (Math.abs(dist) < 2) return;
-
-  let t0 = null;
-  const step = (ts) => {
-    if (!t0) t0 = ts;
-    const t = Math.min((ts - t0) / duration, 1);
-    window.scrollTo(0, startY + dist * eioQuart(t));
-    if (t < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-
-function getEl(section) {
-  if (section.id) return document.getElementById(section.id);
-  if (section.zone != null)
-    return document.querySelector(
-      `.work__category-zone[data-index="${section.zone}"]`,
-    );
-  return null;
-}
-
 export default function SectionNav() {
+  const { t } = useTranslation();
   const [active, setActive] = useState(0);
   const [visible, setVisible] = useState(false);
-  const ioRef = useRef(null);
 
-  // Fade nav in after hero intro settles
+  const sections = [
+    { label: t('nav.home'), id: 'hero' },
+    { label: t('nav.work'), id: 'work' },
+    { label: t('nav.about'), id: 'about' },
+    { label: t('nav.contact'), id: 'connect' },
+  ];
+
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 2200);
-    return () => clearTimeout(t);
+    const reducedMotion = shouldReduceMotion();
+    const timeout = setTimeout(() => setVisible(true), reducedMotion ? 0 : 2200);
+    return () => clearTimeout(timeout);
   }, []);
 
-  // Track active section via IntersectionObserver
   useEffect(() => {
-    const observers = [];
+    const observers = sections.map((section, index) => {
+      const element = document.getElementById(section.id);
+      if (!element) return null;
 
-    SECTIONS.forEach((sec, i) => {
-      const el = getEl(sec);
-      if (!el) return;
-
-      const io = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) setActive(i);
+          if (entry.isIntersecting) setActive(index);
         },
-        { threshold: 0.5 },
+        { rootMargin: '-35% 0px -55%', threshold: 0 },
       );
-      io.observe(el);
-      observers.push(io);
+      observer.observe(element);
+      return observer;
     });
 
-    return () => observers.forEach((io) => io.disconnect());
+    return () => observers.forEach((observer) => observer?.disconnect());
   }, []);
 
-  const handleClick = (i) => {
-    const sec = SECTIONS[i];
-    const el = getEl(sec);
-    if (!el) return;
-
-    // For work zones: reset carousel to card 0
-    if (sec.zone != null) {
-      window.dispatchEvent(
-        new CustomEvent('sectionnav:goto', { detail: { zoneIndex: sec.zone } }),
-      );
-    }
-
-    // Lock the carousel's wheel handler for the duration of the smooth scroll
-    // so it doesn't snap-fight with the programmatic navigation
-    window.dispatchEvent(new CustomEvent('sectionnav:navigate'));
-
-    smoothScrollTo(el);
-  };
-
-  // Work zones (indices 1–3) have a light background → pink palette
-  // Hero (0), About (4), Connect (5) are dark → green palette
-  const theme = active >= 1 && active <= 3 ? 'light' : 'dark';
+  const theme = active === 1 ? 'light' : 'dark';
 
   return (
     <nav
@@ -101,21 +59,20 @@ export default function SectionNav() {
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateX(0)' : 'translateX(12px)',
-        transition:
-          'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)',
       }}
-      aria-label="Section navigation"
+      aria-label={t('nav.sections')}
     >
-      {SECTIONS.map((sec, i) => (
+      {sections.map((section, index) => (
         <button
-          key={i}
-          className={`section-nav__item${active === i ? ' active' : ''}`}
-          onClick={() => handleClick(i)}
-          aria-label={`Go to ${sec.label}`}
-          title={sec.label}
+          key={section.id}
+          className={`section-nav__item${active === index ? ' active' : ''}`}
+          onClick={() => scrollToSection(section.id)}
+          aria-label={t('nav.go_to', { section: section.label })}
+          aria-current={active === index ? 'location' : undefined}
+          title={section.label}
         >
-          <span className="section-nav__dot" />
-          <span className="section-nav__label">{sec.label}</span>
+          <span className="section-nav__dot" aria-hidden="true" />
+          <span className="section-nav__label">{section.label}</span>
         </button>
       ))}
     </nav>

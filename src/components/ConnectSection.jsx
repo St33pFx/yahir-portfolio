@@ -1,8 +1,11 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import TextPressure from './TextPressure';
-import SplitText from './SplitText';
+import { shouldReduceMotion } from '../utils/motion';
+
+gsap.registerPlugin(useGSAP);
 
 // Per-character color maps — matching Figma exactly:
 // "hello@"  → "hello" = cream, "@" = pink (#e36085)
@@ -18,6 +21,14 @@ function makeChars(text) {
   ));
 }
 
+function makeFooterChars(text) {
+  return text.split('').map((char, index) => (
+    <span key={index} className="connect__footer-char" aria-hidden="true">
+      {char === ' ' ? '\u00A0' : char}
+    </span>
+  ));
+}
+
 export default function ConnectSection() {
   const { t } = useTranslation();
   const sectionRef  = useRef(null);
@@ -26,7 +37,7 @@ export default function ConnectSection() {
   const rightRef    = useRef(null);
   const footerRef   = useRef(null);
 
-  useLayoutEffect(() => {
+  useGSAP(() => {
     const section = sectionRef.current;
     const bg      = bgRef.current;
     const heading = headingRef.current;
@@ -36,9 +47,16 @@ export default function ConnectSection() {
 
     const lines    = heading.querySelectorAll('.connect__line');
     const allChars = [...lines].flatMap(l => [...l.querySelectorAll('.connect__char')]);
+    const footerChars = footer ? [...footer.querySelectorAll('.connect__footer-char')] : [];
+
+    if (shouldReduceMotion()) {
+      gsap.set(bg, { scaleY: 1, transformOrigin: 'bottom center' });
+      return undefined;
+    }
 
     gsap.set(allChars, { y: '110%', opacity: 0 });
     if (right)  gsap.set([...right.children], { opacity: 0, y: 24 });
+    gsap.set(footerChars, { opacity: 0, y: 20 });
     gsap.set(bg, { scaleY: 0, transformOrigin: 'bottom center' });
 
     const observer = new IntersectionObserver((entries) => {
@@ -64,13 +82,21 @@ export default function ConnectSection() {
           }, '>-0.4');
         }
 
+        tl.to(footerChars, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.025,
+          ease: 'power3.out',
+        }, '>-0.25');
+
         observer.unobserve(section);
       });
-    }, { threshold: 0.55 });
+    }, { threshold: 0.25 });
 
     observer.observe(section);
     return () => observer.disconnect();
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section className="connect" id="connect" ref={sectionRef}>
@@ -143,20 +169,9 @@ export default function ConnectSection() {
 
         {/* ── Footer ── */}
         <div className="connect__footer" ref={footerRef}>
-          <SplitText
-            text={t('connect.footer_rights')}
-            tag="span"
-            className="connect__footer-text"
-            splitType="chars"
-            from={{ opacity: 0, y: 20 }}
-            to={{ opacity: 1, y: 0 }}
-            delay={25}
-            duration={0.8}
-            ease="power3.out"
-            threshold={0.2}
-            rootMargin="0px"
-            textAlign="left"
-          />
+          <span className="connect__footer-text" aria-label={t('connect.footer_rights')}>
+            {makeFooterChars(t('connect.footer_rights'))}
+          </span>
         </div>
 
       </div>

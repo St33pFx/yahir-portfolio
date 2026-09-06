@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   output: 'static',
   site: 'https://jozedzn.com',
+  redirects: {
+    '/work/folio-2025': '/work/folio-2026',
+    '/es/work/folio-2025': '/es/work/folio-2026',
+  },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],

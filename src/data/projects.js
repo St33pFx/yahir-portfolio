@@ -161,6 +161,76 @@ export const categories = [
     title: '3D Art',
     projects: [
       {
+        slug: 'keltec-ksg',
+        name: 'KelTec KSG',
+        featuredRank: 0,
+        published: true,
+        wip: true,
+        year: '2026',
+        tags: ['Hard Surface', 'Game Ready', 'Blender', 'Substance Painter', 'Marmoset Toolbag', 'WIP'],
+        image: '/assets/images/ksg/ksg-wireframe.jpg',
+        mobileImage: '/assets/images/ksg/ksg-wip-cover-mobile.svg',
+        socialImage: '/assets/images/og-image.png',
+        video: null,
+        caseStudy: {
+          es: {
+            overview: 'Elegí la KSG porque de perfil parecía mucho más simple de lo que realmente es. Grandes paneles, rails, tubos y unas cuantas piezas mecánicas. En cuanto empecé a verla desde otros ángulos, esa idea duró poco. Muchas formas sólo tienen sentido por cómo se solapan entre sí, y pequeños errores de proporción terminan afectando piezas varios centímetros más adelante. Lo que empezó como un ejercicio de hard surface terminó convirtiéndose en mi intento más serio de llevar un asset mecánico complejo por un pipeline completo para tiempo real.',
+            sections: [
+              {
+                title: 'El problema empezó en las referencias',
+                body: 'Antes de pelearme con la topología tuve que pelearme con las referencias. Algunas vistas que parecían laterales tenían un ligero giro de cámara. Era suficiente para mostrar caras frontales y traseras que, en una vista ortográfica real, no deberían aparecer. Usarlas directamente me estaba dando información falsa sobre ciertas proporciones. Terminé trabajando con un set de referencias más controlado y usando la longitud real del arma como ancla de escala en Blender.',
+              },
+              {
+                title: 'Blockout → high poly',
+                body: 'El blockout fue rápido porque usé booleans y bevels para encontrar la forma sin preocuparme demasiado pronto por una topología bonita. La factura llegó después. Convertir ese blockout en un high poly que se comportara de forma predecible significó revisar pieza por pieza: limpiar donde el shading realmente lo necesitaba, añadir support loops sólo donde aportaban algo y dejar de tratar cada ngon como si automáticamente fuera un problema.',
+              },
+              {
+                title: 'Una línea que no debía estar ahí',
+                body: 'En una de las piezas apareció una línea de shading después de triangular una zona que, en teoría, seguía siendo completamente plana. Añadir más geometría a lo bruto no era la solución. El problema estaba en cómo se estaba resolviendo esa superficie. Cambié la distribución conectando un vértice adicional y el artefacto desapareció. Fue una de esas pequeñas broncas que terminan enseñando más que media hora modelando sin problemas.',
+              },
+              {
+                title: 'Low poly',
+                body: 'Para el low poly estoy tratando cada pieza según lo que realmente necesita conservar. Las superficies planas pueden ser brutalmente simples; las curvas, la silueta y las intersecciones mecánicas son donde vale la pena gastar geometría. El handle, por ejemplo, quedó en 2,918 tris sin tornillo ni base y 3,386 tris incluyéndolos. No estoy tratando esos números como una meta universal, sino como una consecuencia de lo que esa pieza necesita conservar visualmente.',
+              },
+              {
+                title: 'Lo que sigue en el pipeline',
+                body: 'El modelado y el low poly viven en Blender. Cuando cierre geometría vienen UVs, bake y pruebas de normals en Marmoset Toolbag; después texturas PBR en Substance Painter y una presentación final otra vez en Marmoset. Es el plan, pero no voy a fingir que ya llegué ahí: por ahora esta imagen sigue mostrando el estado real del modelo.',
+              },
+            ],
+            takeawayLabel: 'WIP',
+            takeaway: 'La KSG todavía está en proceso, así que esta página también. Voy a ir actualizándola conforme el asset avance por low poly, UVs, bake, texturas y presentación final.',
+          },
+          en: {
+            overview: "I picked the KSG because, from the side, it looked much simpler than it actually is. Large panels, rails, tubes and a handful of mechanical pieces. Once I started looking at it from different angles, that idea didn't last long. A lot of its shapes only make sense through the way they overlap, and small proportion mistakes can affect parts much further down the model. What started as a hard-surface exercise eventually became my most serious attempt at taking a complex mechanical asset through a full real-time pipeline.",
+            sections: [
+              {
+                title: 'The reference problem',
+                body: "Before fighting the topology, I had to fight the references. Some images that looked like clean side views had a small amount of camera yaw. It was enough to expose front and rear faces that shouldn't exist in a true orthographic view, which made some proportions misleading. I rebuilt the reference setup around cleaner views and used the real overall length as the main scale anchor inside Blender.",
+              },
+              {
+                title: 'Blockout → high poly',
+                body: "The blockout came together quickly because I relied on booleans and bevels to find the shapes without worrying too early about beautiful topology. I paid for that speed later. Turning it into a predictable high poly meant going piece by piece: cleaning geometry where shading actually cared, adding support loops only where they earned their place, and learning that an ngon isn't automatically a problem just because it exists.",
+              },
+              {
+                title: "The line that shouldn't be there",
+                body: "One small topology change produced a visible shading line across an otherwise flat section. Throwing more geometry at it wasn't the answer. The problem was how the surface was being resolved. I changed the split by connecting an additional vertex and the artifact disappeared. Tiny problem, surprisingly useful lesson.",
+              },
+              {
+                title: 'Low poly',
+                body: "The low poly isn't a blind reduction of the high poly. Flat surfaces can be brutally simple. Curved silhouettes and mechanical intersections are where the geometry earns its budget. The handle, for example, currently sits at 2,918 triangles without its screw and base, or 3,386 with them included. I'm treating those as working numbers rather than arbitrary targets.",
+              },
+              {
+                title: 'What comes next',
+                body: "The modeling and low poly live in Blender. Once the geometry is locked, the next steps are UVs, baking and normal-map checks in Marmoset Toolbag, followed by PBR texturing in Substance Painter and a final presentation back in Marmoset. That's the plan, not a finished-stage checklist: the image on this page still shows the model exactly where it is today.",
+              },
+            ],
+            takeawayLabel: 'WIP',
+            takeaway: "The KSG is still moving, so this page will too. I'll keep updating it as the asset goes through low poly, UVs, baking, texturing and final presentation.",
+          },
+          gallery: [],
+        },
+      },
+      {
         slug: 'level-design-unity',
         name: 'Level Design — Unity',
         vimeoId: '1175307968',
@@ -263,34 +333,80 @@ export const categories = [
     title: 'Web',
     projects: [
       {
-        slug: 'folio-2025',
-        name: 'Folio 2025',
-        year: '2025',
-        tags: ['React', 'GSAP'],
-        image: null,
+        slug: 'folio-2026',
+        name: 'Folio 2026',
+        year: '2026',
+        tags: ['Figma', 'Astro', 'React', 'GSAP', 'Lenis'],
+        image: '/assets/images/folio-2026-cover.svg',
+        socialImage: '/assets/images/og-image.png',
         video: null,
         caseStudy: {
-          es: makeContent(
-            'Este mismo portafolio — un proyecto de desarrollo creativo que fusiona principios de motion design con ingeniería web moderna.',
-            'Construir una experiencia web que comunique la intersección entre diseño y código, no solo una lista de proyectos.',
-            'Estudié Awwwards y portafolios de creative developers para identificar patrones que vale la pena conservar y otros que vale la pena romper.',
-            'React + Vite para la arquitectura, GSAP para toda la orquestación de animaciones y lógica de scroll personalizada.',
-            'Cada transición fue trazada en papel antes de escribir código. Las curvas de timing se iteraron de forma aislada antes de integrarlas.',
-            'Un portafolio es un producto. Merece el mismo rigor que cualquier proyecto de cliente.',
-          ),
-          en: makeContent(
-            'This portfolio itself — a creative development project that merges motion design principles with modern web engineering.',
-            'Build a web experience that communicates the intersection of design and code, not just a list of projects.',
-            'Studied Awwwards and creative developer portfolios to identify patterns worth keeping and others worth breaking.',
-            'React + Vite for the architecture, GSAP for all animation orchestration and custom scroll logic.',
-            'Every transition was sketched on paper before writing code. Timing curves were iterated in isolation before integrating them.',
-            'A portfolio is a product. It deserves the same rigor as any client project.',
-          ),
-          gallery: [],
+          es: {
+            overview: 'Este sitio empezó como una maqueta bastante ordenada en Figma y terminó convertido en mi laboratorio personal. Aquí junto casi todo lo que hago: dirección visual, código, motion, 3D y esa costumbre de mover algo dos píxeles sólo para regresarlo una hora después. Folio 2026 no intenta parecer una agencia ni vender humo. La idea es más sencilla: que al entrar ya se sienta cómo trabajo antes de leer una sola descripción.',
+            goal: 'Quería un portafolio con carácter, pero que siguiera siendo rápido, claro y fácil de recorrer. Si una animación se veía increíble aislada pero estorbaba al navegar, no servía. Si el sitio sólo funcionaba en mi monitor, tampoco.',
+            sections: [
+              {
+                title: 'Del Figma bonito al navegador incómodo',
+                body: 'La composición nació en Figma: tipografía enorme, mucho negro, verde ácido y rosa. En el navegador aparecieron las preguntas de verdad. ¿Qué pasa cuando el título cambia de idioma? ¿Dónde cae una tarjeta en una pantalla angosta? ¿Cuánto tarda una entrada antes de que se sienta como una intro que ya quieres saltar? Gran parte del trabajo fue ajustar ritmo y proporciones directamente con el sitio funcionando.',
+              },
+              {
+                title: 'Motion, pero con motivo',
+                body: 'GSAP controla la ola inicial, los revelados, los contadores y las pequeñas respuestas al puntero. Lenis suaviza el scroll y se mantiene sincronizado con ScrollTrigger. No quise llenar cada hueco con movimiento: las animaciones importantes son las que presentan una sección, explican un cambio o hacen que tocar algo se sienta bien. El resto sólo hace ruido.',
+              },
+              {
+                title: 'Dos idiomas, la misma voz',
+                body: 'La versión en español no es un botón que cambia textos por encima. Tiene rutas propias, metadata propia y cada case study se puede compartir en su idioma. El navegador sugiere la primera entrada, pero después manda la elección de la persona. También reescribí el copy para quitar frases de portafolio prefabricado y dejar una voz que sí usaría fuera de esta página.',
+              },
+              {
+                title: 'Lo que nadie ve también cuenta',
+                body: 'Astro genera páginas estáticas para que el contenido llegue rápido y sea legible desde el HTML inicial. React se queda sólo donde hace falta interacción. También hay canonical, hreflang, datos estructurados, sitemap, preview social, navegación por teclado y un modo de movimiento reducido que no deja contenido escondido. No es la parte más llamativa, pero sí la que evita que el sitio se caiga en cuanto sale de la demo.',
+              },
+              {
+                title: 'Todavía se está moviendo',
+                body: 'Lo llamo Folio 2026 porque ya no es aquella primera versión y porque tampoco quiero congelarlo como una pieza terminada. Van a cambiar proyectos, imágenes y seguramente alguna decisión que hoy me parece brillante. Esa es parte del punto: este sitio también documenta cómo voy afinando mi criterio.',
+              },
+            ],
+            takeawayLabel: 'La idea',
+            takeaway: 'Hacer mi propio portafolio me recordó algo bastante obvio: diseñar la página es fácil; decidir qué merece quedarse es el trabajo de verdad.',
+          },
+          en: {
+            overview: "This site started as a very tidy Figma file and slowly turned into my personal lab. It brings together most of what I do: visual direction, code, motion, 3D, and the bad habit of moving something two pixels only to move it back an hour later. Folio 2026 isn't trying to look like an agency or sell a grand creative manifesto. The goal is simpler: the way I work should be obvious before anyone reads a project description.",
+            goal: "I wanted a portfolio with a point of view that was still fast, clear and easy to move through. If an animation looked great on its own but made navigation annoying, it wasn't doing its job. If the layout only worked on my monitor, neither was the layout.",
+            sections: [
+              {
+                title: 'From a tidy Figma file to a messy browser',
+                body: 'The visual language started in Figma: oversized type, a lot of black, acid green and pink. The real questions showed up in the browser. What happens when a headline changes language? Where does a card land on a narrow screen? How long can an intro run before it becomes the thing you want to skip? Most of the useful decisions came from tuning rhythm and proportion while using the actual site.',
+              },
+              {
+                title: 'Motion with a reason to be there',
+                body: "GSAP runs the opening wave, reveals, counters and small pointer reactions. Lenis handles smooth scrolling and stays synchronized with ScrollTrigger. I didn't want every empty space to move. The animations that stayed either introduce a section, explain a change or make an interaction feel better. Everything else is just noise.",
+              },
+              {
+                title: 'Two languages, one voice',
+                body: "Spanish isn't a button that swaps text on top of the English site. It has its own routes, metadata and shareable case-study URLs. The browser suggests a language on the first visit; after that, the visitor's choice wins. I also rewrote the copy to get rid of portfolio filler and keep the kind of voice I would actually use outside this page.",
+              },
+              {
+                title: 'The invisible work still counts',
+                body: "Astro generates static pages so the content arrives quickly and is readable in the initial HTML. React only stays where interaction needs it. The site also has canonicals, hreflang, structured data, a sitemap, social previews, keyboard navigation and a reduced-motion mode that never hides the content. It isn't the flashy part, but it is what keeps the site from falling apart outside the demo.",
+              },
+              {
+                title: 'Still moving',
+                body: "It's called Folio 2026 because it is no longer that first version, and because I don't want to freeze it as a finished piece. Projects and images will change, and a few decisions that feel brilliant today probably will too. That's part of the point: the site also records how my judgment keeps changing.",
+              },
+            ],
+            takeawayLabel: 'The point',
+            takeaway: 'Building my own portfolio reminded me of something obvious: designing the page is easy; deciding what deserves to stay is the actual work.',
+          },
+          gallery: [
+            '/assets/images/folio-2026-cover.svg',
+            '/assets/images/folio-2026-system.svg',
+            '/assets/images/folio-2026-responsive.svg',
+          ],
         },
       },
       {
         slug: 'web-02',
+        published: false,
         name: 'Coming Soon',
         year: '2025',
         tags: ['TBD'],
@@ -304,6 +420,7 @@ export const categories = [
       },
       {
         slug: 'web-03',
+        published: false,
         name: 'Coming Soon',
         year: '2025',
         tags: ['TBD'],
@@ -317,6 +434,7 @@ export const categories = [
       },
       {
         slug: 'web-04',
+        published: false,
         name: 'Coming Soon',
         year: '2025',
         tags: ['TBD'],
@@ -330,6 +448,7 @@ export const categories = [
       },
       {
         slug: 'web-05',
+        published: false,
         name: 'Coming Soon',
         year: '2025',
         tags: ['TBD'],
@@ -343,6 +462,7 @@ export const categories = [
       },
       {
         slug: 'web-06',
+        published: false,
         name: 'Coming Soon',
         year: '2025',
         tags: ['TBD'],
@@ -359,19 +479,24 @@ export const categories = [
 ];
 
 export function getAllProjects() {
-  return categories.flatMap((cat) =>
-    cat.projects.map((p) => ({
-      ...p,
-      category: cat.title,
-      categoryId: cat.id,
-    })),
-  );
+  return categories
+    .flatMap((cat) =>
+      cat.projects.map((p) => ({
+        ...p,
+        category: cat.title,
+        categoryId: cat.id,
+      })),
+    )
+    .filter((project) => project.published !== false)
+    .sort((a, b) => (a.featuredRank ?? 999) - (b.featuredRank ?? 999));
 }
 
 export function getProjectBySlug(slug) {
   for (const cat of categories) {
     const project = cat.projects.find((p) => p.slug === slug);
-    if (project) return { ...project, category: cat.title, categoryId: cat.id };
+    if (project && project.published !== false) {
+      return { ...project, category: cat.title, categoryId: cat.id };
+    }
   }
   return null;
 }

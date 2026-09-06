@@ -5,7 +5,7 @@ import { getAllProjects, getProjectBySlug } from '../../data/projects';
 
 export function getStaticPaths() {
   return getAllProjects()
-    .filter(p => p.caseStudy?.en?.overview || p.caseStudy?.es?.overview)
+    .filter(p => p.caseStudy?.en?.overview)
     .map(p => ({ params: { slug: p.slug }, props: { slug: p.slug } }));
 }
 
@@ -16,13 +16,13 @@ const pageTitle = project
   ? `${project.name} — ${project.category} | JozeDzn`
   : 'Work | JozeDzn';
 
-const overviewText = project?.caseStudy?.en?.overview || project?.caseStudy?.es?.overview || '';
+const overviewText = project?.caseStudy?.en?.overview || '';
 const pageDesc = overviewText
   ? overviewText.slice(0, 155) + (overviewText.length > 155 ? '…' : '')
   : `${project?.name} — a ${project?.category} project by JozeDzn.`;
 
-const pageImage = project?.image
-  ? project.image  // local path — BaseLayout will prepend siteUrl
+const pageImage = project?.socialImage || project?.image
+  ? (project.socialImage || project.image)  // local path — BaseLayout will prepend siteUrl
   : project?.vimeoId
   ? `https://vumbnail.com/${project.vimeoId}.jpg`
   : undefined;
@@ -55,8 +55,11 @@ const jsonLd = [breadcrumbSchema, creativeWorkSchema].filter(Boolean);
   title={pageTitle}
   description={pageDesc}
   canonicalPath={`/work/${slug}`}
+  alternateEnPath={`/work/${slug}`}
+  alternateEsPath={`/es/work/${slug}`}
   ogImage={pageImage}
+  ogImageAlt={`${project?.name || 'Project'} — JozeDzn case study`}
   jsonLd={jsonLd}
 >
-  <CaseStudyPage slug={slug} client:load />
+  <CaseStudyPage slug={slug} initialLang="en" client:load />
 </BaseLayout>

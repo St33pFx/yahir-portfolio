@@ -12,7 +12,8 @@ export default function ScrollProgress() {
       if (!ticking) {
         requestAnimationFrame(() => {
           const docH = document.documentElement.scrollHeight - window.innerHeight;
-          bar.style.width = (docH > 0 ? (window.scrollY / docH) * 100 : 0) + '%';
+          const progress = docH > 0 ? window.scrollY / docH : 0;
+          bar.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
           ticking = false;
         });
         ticking = true;

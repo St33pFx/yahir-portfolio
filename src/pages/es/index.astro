@@ -3,9 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import HomePage from '../../components/HomePage';
 ---
 <BaseLayout
-  title="JozeDzn — Motion · 3D · Web · Games"
-  description="JozeDzn — Creative Developer based in Mexico. Motion Graphics, 3D Art, Web Design, and Game Development."
-  canonicalPath="/"
+  lang="es"
+  title="JozeDzn — 3D · Motion · Web · Games"
+  description="JozeDzn es un artista 3D y motion designer en México, enfocado en hard surface, assets game-ready y trabajo digital cargado de motion."
+  canonicalPath="/es/"
+  alternateEnPath="/"
+  alternateEsPath="/es/"
 >
-  <HomePage client:load />
+  <HomePage initialLang="es" client:load />
 </BaseLayout>

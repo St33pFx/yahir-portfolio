@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText as GSAPSplitText } from 'gsap/SplitText';
 import { useGSAP } from '@gsap/react';
+import { shouldReduceMotion } from '../utils/motion';
 
 gsap.registerPlugin(ScrollTrigger, GSAPSplitText, useGSAP);
 
@@ -31,11 +32,15 @@ const SplitText = ({
   }, [onLetterAnimationComplete]);
 
   useEffect(() => {
+    let cancelled = false;
     if (document.fonts.status === 'loaded') {
       setFontsLoaded(true);
     } else {
-      document.fonts.ready.then(() => setFontsLoaded(true));
+      document.fonts.ready.then(() => {
+        if (!cancelled) setFontsLoaded(true);
+      });
     }
+    return () => { cancelled = true; };
   }, []);
 
   useGSAP(
@@ -44,6 +49,12 @@ const SplitText = ({
       if (animationCompletedRef.current) return;
 
       const el = ref.current;
+
+      if (shouldReduceMotion()) {
+        animationCompletedRef.current = true;
+        onCompleteRef.current?.();
+        return undefined;
+      }
 
       if (el._rbsplitInstance) {
         try { el._rbsplitInstance.revert(); } catch (_) {}
@@ -58,7 +69,9 @@ const SplitText = ({
         marginValue === 0 ? '' :
         marginValue < 0   ? `-=${Math.abs(marginValue)}${marginUnit}` :
                             `+=${marginValue}${marginUnit}`;
-      const start = `top ${startPct}%${sign}`;
+      // Clamp matters for footer copy: near the bottom of the document its
+      // theoretical start can sit beyond the maximum scroll position.
+      const start = `clamp(top ${startPct}%${sign})`;
 
       let targets;
       const assignTargets = self => {
@@ -95,6 +108,7 @@ const SplitText = ({
               },
               onComplete: () => {
                 animationCompletedRef.current = true;
+                gsap.set(targets, { clearProps: 'willChange' });
                 onCompleteRef.current?.();
               },
               willChange: 'transform, opacity',
@@ -120,6 +134,7 @@ const SplitText = ({
         threshold, rootMargin, fontsLoaded,
       ],
       scope: ref,
+      revertOnUpdate: true,
     }
   );
 
@@ -134,7 +149,6 @@ const SplitText = ({
         display: 'inline-block',
         whiteSpace: 'normal',
         wordWrap: 'break-word',
-        willChange: 'transform, opacity',
       }}
     >
       {text}

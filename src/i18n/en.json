@@ -1,51 +1,95 @@
 {
   "nav": {
+    "home": "Home",
     "work": "Work",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "sections": "Section navigation",
+    "go_to": "Go to {{section}}",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "switch_language": "Switch to Spanish"
   },
   "hero": {
     "based": "Based in Mexico",
-    "disciplines": "Motion · 3D · Web · Games"
+    "disciplines": "3D · Motion · Web · Games"
   },
   "work": {
     "heading": "Work",
-    "subheading": "Selected projects I've worked on"
+    "subheading": "Client work, 3D studies and a few things I couldn't leave alone.",
+    "filter_label": "Filter work by category",
+    "filter_all": "All",
+    "prev_page": "Previous projects",
+    "next_page": "Next projects",
+    "view_project": "View Project",
+    "wip": "Work in progress",
+    "categories": {
+      "motion-graphics": "Motion Graphics",
+      "3d-art": "3D Art",
+      "web": "Web"
+    }
   },
   "about": {
     "label": "About",
-    "tagline": "Web · Motion · Interactive",
+    "title_lines": ["3D Artist", "Motion Designer"],
+    "tagline": "Hard Surface · Motion · Interactive",
     "location": "Based in Mexico",
-    "bio": "Creative developer focused on web experiences, motion, and interactive design. I combine design, animation, and code to build digital experiences that leave an impression.",
+    "bio_p1": "I started in motion graphics, spent years inside After Effects, and eventually got pulled into 3D hard-surface work.",
+    "bio_p2": "These days I split my time between building game-ready assets in Blender and making motion-heavy digital work. I like understanding why something works—not just which button makes it happen—so most projects eventually become an excuse to dig a little deeper into the pipeline.",
     "highlights_eyebrow": "Selected Highlights",
     "highlights_heading": "By the numbers.",
     "stack_eyebrow": "Stack",
     "stack_heading": "Tools & Workflow.",
     "stats": [
-      { "label": "Content Reach",    "desc": "Hundreds of thousands\nto millions of views" },
-      { "label": "Years Experience", "desc": "Digital content,\nmotion, and web" },
-      { "label": "Evolution",        "desc": "From motion graphics\nto web development" },
-      { "label": "Skillset",         "desc": "Motion, web &\ninteractive media" }
+      { "label": "Content Reach", "desc": "Across client and personal work" },
+      { "label": "Years Making Things", "desc": "Motion, 3D and digital work" },
+      { "value": "Motion → 3D", "label": "Current Direction", "desc": "Going deeper into game-ready work" },
+      { "value": "3D · Motion · Web", "label": "Still Multidisciplinary", "desc": "Apparently one discipline wasn't enough." }
     ],
     "stack_cats": {
-      "Design":               "Design",
-      "Motion":               "Motion",
-      "3D":                   "3D",
-      "Web":                  "Web",
-      "Animation":            "Animation",
-      "Workflow":             "Workflow",
-      "Currently exploring":  "Currently exploring"
+      "3D": "3D",
+      "Motion": "Motion",
+      "Web": "Web",
+      "Design": "Design",
+      "Workflow": "Workflow"
     }
   },
   "connect": {
-    "heading_l1": "Have a project",
+    "heading_l1": "Something interesting",
     "heading_l2": "in mind?",
-    "heading_l3": "Let's build it.",
+    "heading_l3": "Tell me about it.",
     "label_contact": "Contact",
     "label_social": "Social",
     "footer_rights": "© 2026 All rights reserved.",
-    "footer_designed": "Designed By JozeDzn",
+    "footer_designed": "Designed by JozeDzn",
     "linkedin": "LinkedIn",
     "instagram": "Instagram"
+  },
+  "caseStudy": {
+    "overview": "Overview",
+    "goal": "Goal",
+    "process": "Process",
+    "concept": "Concept",
+    "execution": "Execution",
+    "motion": "Motion & Timing",
+    "visuals": "Visuals",
+    "view_image": "View image",
+    "takeaway": "Takeaway",
+    "next": "Next Project",
+    "all_work": "All Work",
+    "back_home": "Back to Home",
+    "watch_sound": "Tap to watch with sound",
+    "project_not_found": "Project not found",
+    "open_project_video": "Play {{project}} with sound",
+    "open_visual": "Open {{project}} visual {{number}}",
+    "visual_alt": "{{project}} — visual {{number}}",
+    "close": "Close",
+    "previous": "Previous image",
+    "next_image": "Next image",
+    "video_dialog": "{{project}} video"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist."
   }
 }

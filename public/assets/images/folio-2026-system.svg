@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Folio 2026 visual system</title>
+  <desc id="desc">Typography, colors, motion and development tools used in the portfolio.</desc>
+  <rect width="1600" height="900" fill="#0c0c0c"/>
+  <text x="72" y="82" fill="#f0fde6" opacity=".45" font-family="Arial, sans-serif" font-size="15" letter-spacing="5">SYSTEM / 01</text>
+  <text x="72" y="185" fill="#b3f381" font-family="Arial Black, Arial, sans-serif" font-size="108" letter-spacing="-5">LOUD TYPE.</text>
+  <text x="72" y="283" fill="#e36085" font-family="Arial Black, Arial, sans-serif" font-size="108" letter-spacing="-5">QUIET UI.</text>
+  <line x1="72" y1="342" x2="1528" y2="342" stroke="#333"/>
+  <g transform="translate(72 392)">
+    <text y="0" fill="#f0fde6" opacity=".45" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">PALETTE</text>
+    <rect y="42" width="230" height="190" rx="12" fill="#b3f381"/>
+    <rect x="246" y="42" width="230" height="190" rx="12" fill="#e36085"/>
+    <rect x="492" y="42" width="230" height="190" rx="12" fill="#f0fde6"/>
+    <text x="18" y="212" fill="#0c0c0c" font-family="Arial, sans-serif" font-size="14">#B3F381</text>
+    <text x="264" y="212" fill="#0c0c0c" font-family="Arial, sans-serif" font-size="14">#E36085</text>
+    <text x="510" y="212" fill="#0c0c0c" font-family="Arial, sans-serif" font-size="14">#F0FDE6</text>
+  </g>
+  <g transform="translate(862 392)">
+    <text y="0" fill="#f0fde6" opacity=".45" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">MOTION</text>
+    <rect y="42" width="666" height="190" rx="12" fill="#111" stroke="#333"/>
+    <path d="M42 188 C175 188 177 71 310 71 S447 188 624 70" fill="none" stroke="#b3f381" stroke-width="5"/>
+    <circle cx="42" cy="188" r="8" fill="#e36085"/><circle cx="624" cy="70" r="8" fill="#e36085"/>
+    <text x="42" y="96" fill="#f0fde6" opacity=".7" font-family="Arial, sans-serif" font-size="16">SCROLL IS PART OF THE LAYOUT</text>
+  </g>
+  <line x1="72" y1="686" x2="1528" y2="686" stroke="#333"/>
+  <text x="72" y="738" fill="#f0fde6" opacity=".45" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">STACK</text>
+  <g fill="none" stroke="#555" font-family="Arial, sans-serif" font-size="18">
+    <rect x="72" y="768" width="176" height="54" rx="27"/><rect x="264" y="768" width="176" height="54" rx="27"/>
+    <rect x="456" y="768" width="176" height="54" rx="27"/><rect x="648" y="768" width="176" height="54" rx="27"/>
+    <rect x="840" y="768" width="176" height="54" rx="27"/><rect x="1032" y="768" width="176" height="54" rx="27"/>
+  </g>
+  <g fill="#f0fde6" font-family="Arial, sans-serif" font-size="18" text-anchor="middle">
+    <text x="160" y="802">FIGMA</text><text x="352" y="802">ASTRO</text><text x="544" y="802">REACT</text>
+    <text x="736" y="802">GSAP</text><text x="928" y="802">LENIS</text><text x="1120" y="802">GITHUB</text>
+  </g>
+  <text x="1528" y="802" text-anchor="end" fill="#e36085" font-family="Arial Black, Arial, sans-serif" font-size="30">FOLIO 2026</text>
+</svg>

@@ -3,16 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { categories } from '../data/projects';
+import { categories, getAllProjects } from '../data/projects';
 import ProjectCard from './ProjectCard';
+import { shouldReduceMotion } from '../utils/motion';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const allProjects = categories.flatMap(cat =>
-  cat.projects
-    .filter(p => p.caseStudy?.en?.overview || p.caseStudy?.es?.overview)
-    .map(p => ({ ...p, category: cat.title, categoryId: cat.id }))
-);
+const allProjects = getAllProjects();
 
 /*
  * Desktop grid layout — dramatic asymmetric bento:
@@ -35,6 +32,7 @@ const DESKTOP_LAYOUT = [
   { id: 'g', col: '1 / 2', row: '5 / 6', ar: '3 / 4'   },    // portrait
   { id: 'h', col: '2 / 3', row: '5 / 6', ar: '16 / 10' },    // landscape
   { id: 'i', col: '3 / 4', row: '5 / 6', ar: '1 / 1'   },    // square
+  { id: 'j', col: '1 / 4', row: '6 / 7', ar: '16 / 5'  },    // final wide
 ];
 
 const MOBILE_PATTERN = ['hero', 'portrait', 'landscape', 'cinematic'];
@@ -73,6 +71,7 @@ export default function WorkSection() {
   // ── Desktop premium GSAP animations ──
   useGSAP(() => {
     if (isMobileLayout) return;
+    if (shouldReduceMotion()) return;
     const grid = gridRef.current;
     if (!grid) return;
     const cells = Array.from(grid.querySelectorAll('.bento__cell'));
@@ -115,7 +114,6 @@ export default function WorkSection() {
       const media = cell.querySelector('.project-card__media-wrap');
       if (!media) return;
 
-      const travel = 60;
       gsap.set(media, { yPercent: -3 });
 
       gsap.to(media, {
@@ -145,11 +143,12 @@ export default function WorkSection() {
       });
     }
 
-  }, { scope: gridRef, dependencies: [activeFilter, isMobileLayout] });
+  }, { scope: gridRef, dependencies: [activeFilter, isMobileLayout], revertOnUpdate: true });
 
   // ── Mobile GSAP animations ──
   useGSAP(() => {
     if (!isMobileLayout) return;
+    if (shouldReduceMotion()) return;
     const grid = mobileGridRef.current;
     if (!grid) return;
     const items = Array.from(grid.querySelectorAll('.mobile-work__item'));
@@ -180,13 +179,13 @@ export default function WorkSection() {
         },
       });
     });
-  }, { scope: mobileGridRef, dependencies: [activeFilter, mobilePage, isMobileLayout] });
+  }, { scope: mobileGridRef, dependencies: [activeFilter, mobilePage, isMobileLayout], revertOnUpdate: true });
 
   const filterOptions = [
     { id: 'all', label: t('work.filter_all', 'All') },
     ...categories
       .filter(cat => allProjects.some(p => p.categoryId === cat.id))
-      .map(cat => ({ id: cat.id, label: cat.title })),
+      .map(cat => ({ id: cat.id, label: t(`work.categories.${cat.id}`, cat.title) })),
   ];
 
   const filtered = activeFilter === 'all'
@@ -195,7 +194,7 @@ export default function WorkSection() {
 
   const MOBILE_PER_PAGE = 4;
   const totalPages = Math.ceil(filtered.length / MOBILE_PER_PAGE);
-  const desktopProjects = filtered.slice(0, 9);
+  const desktopProjects = filtered.slice(0, DESKTOP_LAYOUT.length);
   const visibleMobile = isMobileLayout
     ? filtered.slice(mobilePage * MOBILE_PER_PAGE, (mobilePage + 1) * MOBILE_PER_PAGE)
     : [];
@@ -209,7 +208,7 @@ export default function WorkSection() {
           <span className="work__subheading">{t('work.subheading')}</span>
         </div>
 
-        <div className="work__filters" role="group" aria-label="Filter by category">
+        <div className="work__filters" role="group" aria-label={t('work.filter_label')}>
           {filterOptions.map(f => (
             <button
               key={f.id}
@@ -267,7 +266,10 @@ export default function WorkSection() {
                       <span className="mobile-work__index">{String(globalIdx).padStart(2, '0')}</span>
                       <div className="mobile-work__label">
                         <span className="mobile-work__name">{project.name}</span>
-                        <span className="mobile-work__cat">{project.category}</span>
+                        <span className="mobile-work__cat">
+                          {t(`work.categories.${project.categoryId}`, project.category)}
+                          {project.wip ? ` · ${t('work.wip')}` : ''}
+                        </span>
                       </div>
                     </div>
                   </div>

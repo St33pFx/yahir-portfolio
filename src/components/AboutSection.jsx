@@ -1,31 +1,39 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import ScrollReveal from './ScrollReveal';
+import { shouldReduceMotion } from '../utils/motion';
+
+gsap.registerPlugin(useGSAP);
 
 const CELL_COLORS = ['#b3f381', '#e36085', '#f0fde6', '#b3f381'];
 
 const STATS_BASE = [
   { icon: '◈', rawValue: 1.8, suffix: 'M+', decimals: 1 },
   { icon: '⚡', rawValue: 4,   suffix: '+',  decimals: 0 },
-  { icon: '→', isText: true, textValue: 'Motion → Web' },
-  { icon: '✦', isText: true, textValue: 'Multi-Disc.' },
+  { icon: '→', isText: true },
+  { icon: '✦', isText: true },
 ];
 
 const STACK = [
-  { icon: '◉', cat: 'Design',             tools: ['Figma', 'Photoshop'] },
-  { icon: '▶', cat: 'Motion',             tools: ['After Effects', 'DaVinci Resolve', 'Premiere Pro'] },
-  { icon: '◆', cat: '3D',                 tools: ['Blender', 'Maya', 'Substance Painter', 'ZBrush', 'Cinema 4D'] },
-  { icon: '⌨', cat: 'Web',                tools: ['HTML', 'CSS', 'JavaScript', 'React'] },
-  { icon: '◎', cat: 'Animation',          tools: ['GSAP'] },
-  { icon: '⟐', cat: 'Workflow',           tools: ['Git', 'GitHub', 'VS Code', 'Cursor'] },
-  { icon: '→', cat: 'Currently exploring',tools: ['Astro', 'Interactive web experiences'], explore: true },
+  { icon: '◆', cat: '3D',       tools: ['Blender', 'ZBrush', 'Substance Painter', 'Marmoset'] },
+  { icon: '▶', cat: 'Motion',   tools: ['After Effects', 'DaVinci Resolve', 'Premiere Pro'] },
+  { icon: '⌨', cat: 'Web',      tools: ['Astro', 'React', 'JavaScript', 'GSAP'] },
+  { icon: '◉', cat: 'Design',   tools: ['Figma', 'Photoshop'] },
+  { icon: '⟐', cat: 'Workflow', tools: ['Git', 'GitHub', 'VS Code'] },
 ];
 
 export default function AboutSection() {
   const { t } = useTranslation();
   const statsI18n = t('about.stats', { returnObjects: true });
-  const STATS = STATS_BASE.map((s, i) => ({ ...s, label: statsI18n[i]?.label, desc: statsI18n[i]?.desc }));
+  const titleLines = t('about.title_lines', { returnObjects: true });
+  const STATS = STATS_BASE.map((s, i) => ({
+    ...s,
+    textValue: statsI18n[i]?.value,
+    label: statsI18n[i]?.label,
+    desc: statsI18n[i]?.desc || '',
+  }));
 
   const sectionRef  = useRef(null);
   const titleRef    = useRef(null);
@@ -34,7 +42,7 @@ export default function AboutSection() {
   const bioRef      = useRef(null);
   const cellRefs    = useRef([]);
 
-  useLayoutEffect(() => {
+  useGSAP(() => {
     const section = sectionRef.current;
     if (!section) return;
 
@@ -49,6 +57,17 @@ export default function AboutSection() {
     const stripDivider  = section.querySelector('.hl-strip__divider');
     const stripHeader   = section.querySelector('.hl-strip__header');
     const rows          = Array.from(section.querySelectorAll('.hl-strip__row'));
+
+    if (shouldReduceMotion()) {
+      STATS.forEach((stat, i) => {
+        const number = cells[i]?.querySelector('.highlights__number');
+        if (!number) return;
+        number.textContent = stat.isText
+          ? stat.textValue
+          : `${stat.rawValue.toFixed(stat.decimals)}${stat.suffix}`;
+      });
+      return undefined;
+    }
 
     // Initial states — left column
     gsap.set(titleChars, { y: '110%', opacity: 0 });
@@ -113,7 +132,7 @@ export default function AboutSection() {
 
     io.observe(section);
     return () => io.disconnect();
-  }, []);
+  }, { scope: sectionRef });
 
   return (
     <section className="about-full" id="about" ref={sectionRef}>
@@ -123,11 +142,11 @@ export default function AboutSection() {
         <div className="about-full__left">
           <span className="about__label">{t('about.label')}</span>
 
-          <h2 className="about__title" ref={titleRef} aria-label="Creative Developer">
-            {['Creative', 'Developer'].map((word, wi) => (
+          <h2 className="about__title" ref={titleRef} aria-label={titleLines.join(' ')}>
+            {titleLines.map((word, wi) => (
               <span key={wi} className="about__title-line">
                 {word.split('').map((char, ci) => (
-                  <span key={ci} className="char">{char}</span>
+                  <span key={ci} className="char">{char === ' ' ? '\u00A0' : char}</span>
                 ))}
               </span>
             ))}
@@ -151,7 +170,18 @@ export default function AboutSection() {
               baseRotation={2}
               wordAnimationEnd="bottom center"
             >
-              {t('about.bio')}
+              {t('about.bio_p1')}
+            </ScrollReveal>
+            <ScrollReveal
+              as="p"
+              containerClassName="about__para about__para--reveal"
+              baseOpacity={0.07}
+              enableBlur
+              blurStrength={4}
+              baseRotation={1}
+              wordAnimationEnd="bottom center"
+            >
+              {t('about.bio_p2')}
             </ScrollReveal>
           </div>
         </div>
@@ -171,7 +201,10 @@ export default function AboutSection() {
               <div key={i} className="highlights__cell" style={{ '--cell-color': CELL_COLORS[i] }}>
                 <div className="highlights__card-face" ref={el => (cellRefs.current[i] = el)}>
                   <span className="highlights__icon" aria-hidden="true">{stat.icon}</span>
-                  <p className={`highlights__number${stat.isText ? ' highlights__number--text' : ''}`}>
+                  <p
+                    className={`highlights__number${stat.isText ? ' highlights__number--text' : ''}`}
+                    aria-label={stat.isText ? stat.textValue : `${stat.rawValue}${stat.suffix}`}
+                  >
                     {stat.isText ? stat.textValue : '0' + stat.suffix}
                   </p>
                   <div className="highlights__meta">

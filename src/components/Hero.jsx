@@ -1,7 +1,11 @@
-import { useLayoutEffect, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import HeroEye from './HeroEye';
+import { shouldReduceMotion } from '../utils/motion';
+
+gsap.registerPlugin(useGSAP);
 
 const TITLE_TEXT = 'JozeDzn';
 
@@ -35,39 +39,51 @@ function SubtitleChars({ text }) {
 
 export default function Hero() {
   const { t } = useTranslation();
+  const sectionRef = useRef(null);
   const bgRef = useRef(null);
   const elementsRef = useRef(null);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
-  const bgTweenRef = useRef(null); // persists across i18n re-renders
-
-  useLayoutEffect(() => {
+  useGSAP((context, contextSafe) => {
+    const section = sectionRef.current;
     const heroBg = bgRef.current;
     const heroEls = elementsRef.current;
     const heroTitle = titleRef.current;
     const heroSub = subtitleRef.current;
     const navbar = document.getElementById('navbar');
 
-    if (!heroBg || !heroEls || !heroTitle || !navbar) return;
+    const eye = section?.querySelector('#heroEye');
+    if (!section || !heroBg || !heroEls || !heroTitle || !navbar) return;
 
-    // bg-top: fromTo always starts from -100% regardless of React hydration state
-    if (!bgTweenRef.current) {
-      bgTweenRef.current = gsap.fromTo(
-        heroBg,
-        { yPercent: -100 },
-        { yPercent: 0, duration: 1.4, ease: 'power3.out', delay: 0.3 },
-      );
+    const chars = heroTitle.querySelectorAll('.char');
+    if (shouldReduceMotion()) {
+      gsap.set(heroBg, { yPercent: 0 });
+      gsap.set(heroEls, { opacity: 1, y: 0 });
+      gsap.set(chars, { y: 0, opacity: 1, filter: 'none' });
+      gsap.set(heroSub, { opacity: 1 });
+      if (eye) gsap.set(eye, { opacity: 0.72, y: 0 });
+      gsap.set(navbar, { y: 0, opacity: 1 });
+      navbar.classList.remove('hero-hidden');
+      navbar.classList.add('hero-visible');
+      return undefined;
     }
 
-    let tl;
+    // bg-top: fromTo always starts from -100% regardless of React hydration state
+    gsap.fromTo(
+      heroBg,
+      { yPercent: -100 },
+      { yPercent: 0, duration: 1.4, ease: 'power3.out', delay: 0.3 },
+    );
+
+    let cancelled = false;
 
     // Wait for fonts so GSAP animates already-measured text (no layout shift)
-    document.fonts.ready.then(() => {
-      const chars = heroTitle.querySelectorAll('.char');
+    const runIntro = contextSafe(() => {
+      if (cancelled) return;
 
       // Eye: enters from below after bg-top is mostly visible (~1.1s in)
-      gsap.fromTo(
-        '#heroEye',
+      if (eye) gsap.fromTo(
+        eye,
         { opacity: 0, y: 55 },
         {
           opacity: 0.72,
@@ -78,7 +94,7 @@ export default function Hero() {
         },
       );
 
-      tl = gsap.timeline({
+      const tl = gsap.timeline({
         defaults: { ease: 'power4.out' },
         delay: 0.7,
       });
@@ -145,15 +161,16 @@ export default function Hero() {
         },
         '>-0.3',
       );
-    }); // end document.fonts.ready
+    });
+    document.fonts.ready.then(runIntro).catch(runIntro);
 
     return () => {
-      if (tl) tl.kill();
-      // bgTweenRef is intentionally NOT killed here — persists across i18n re-renders
+      cancelled = true;
     };
-  }, []);
+  }, { scope: sectionRef });
 
   useEffect(() => {
+    if (shouldReduceMotion()) return;
     const chars = titleRef.current?.querySelectorAll('.char');
     if (!chars?.length) return;
 
@@ -215,7 +232,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="hero" id="hero">
+    <section className="hero" id="hero" ref={sectionRef}>
       <HeroEye />
       <div className="hero__bg" ref={bgRef}>
         <img src="/assets/images/bg-top.png" alt="" aria-hidden="true" />

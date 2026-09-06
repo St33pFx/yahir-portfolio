@@ -6,7 +6,10 @@ export interface Props {
   description: string;
   lang?: string;
   canonicalPath: string;
+  alternateEnPath?: string;
+  alternateEsPath?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   jsonLd?: object | object[];
   robots?: string;
 }
@@ -16,13 +19,24 @@ const {
   description,
   lang = 'en',
   canonicalPath,
+  alternateEnPath,
+  alternateEsPath,
   ogImage,
+  ogImageAlt,
   jsonLd,
   robots = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
 } = Astro.props;
 
 const siteUrl = 'https://jozedzn.com';
 const canonical = siteUrl + canonicalPath;
+const isSpanish = lang.toLowerCase().startsWith('es');
+const pathWithoutSpanishPrefix = canonicalPath.replace(/^\/es(?=\/|$)/, '') || '/';
+const englishPath = alternateEnPath || (isSpanish ? pathWithoutSpanishPrefix : canonicalPath);
+const spanishPath = alternateEsPath || (englishPath === '/' ? '/es/' : `/es${englishPath}`);
+const englishUrl = siteUrl + englishPath;
+const spanishUrl = siteUrl + spanishPath;
+const ogLocale = isSpanish ? 'es_MX' : 'en_US';
+const ogLocaleAlternate = isSpanish ? 'en_US' : 'es_MX';
 
 // ogImage can be a full URL (e.g. vumbnail.com) or a local path
 const ogImageFull = ogImage?.startsWith('http')
@@ -35,13 +49,18 @@ const personSchema = {
   name: 'JozeDzn',
   url: siteUrl,
   email: 'hello@jozedzn.com',
-  jobTitle: 'Creative Developer',
-  description: 'Creative Developer based in Mexico specializing in Motion Graphics, 3D Art, Web Design, and Game Development.',
+  jobTitle: '3D Artist & Motion Designer',
+  description: isSpanish
+    ? 'Artista 3D y motion designer en México, enfocado en hard surface, assets game-ready y trabajo digital interactivo.'
+    : '3D artist and motion designer based in Mexico, focused on hard-surface, game-ready assets and interactive digital work.',
   image: ogImageFull,
   sameAs: ['https://linkedin.com/in/jozedzn', 'https://instagram.com/jozemotion'],
   address: { '@type': 'PostalAddress', addressCountry: 'MX', addressRegion: 'Mexico' },
-  knowsAbout: ['Motion Graphics', '3D Art', 'Web Development', 'Game Development', 'After Effects', 'Blender', 'Cinema 4D', 'React', 'GSAP', 'Unity'],
-  hasOccupation: { '@type': 'Occupation', name: 'Creative Developer', occupationalCategory: '15-1255.00' },
+  knowsAbout: ['Hard Surface Modeling', 'Game-ready Assets', 'Motion Graphics', '3D Art', 'Web Development', 'After Effects', 'Blender', 'Substance Painter', 'React', 'Astro', 'GSAP'],
+  hasOccupation: [
+    { '@type': 'Occupation', name: '3D Artist' },
+    { '@type': 'Occupation', name: 'Motion Designer' },
+  ],
 };
 
 const extraSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
@@ -53,12 +72,53 @@ const allSchemas = [personSchema, ...extraSchemas];
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Motion follows the OS unless the visitor explicitly overrides it. -->
+  <script is:inline>
+    (() => {
+      try {
+        const key = 'jozedzn:motion';
+        const requested = new URLSearchParams(window.location.search).get('motion');
+        if (requested === 'full' || requested === 'reduce') {
+          localStorage.setItem(key, requested);
+        }
+        const saved = localStorage.getItem(key);
+        const system = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ? 'reduce'
+          : 'full';
+        document.documentElement.dataset.motion = saved === 'full' || saved === 'reduce'
+          ? saved
+          : system;
+      } catch {
+        document.documentElement.dataset.motion = 'full';
+      }
+    })();
+  </script>
+
+  <!-- First visit: browser preference. A saved manual choice always wins. -->
+  <script is:inline>
+    (() => {
+      try {
+        if (window.location.pathname !== '/') return;
+        const saved = localStorage.getItem('jozedzn:lang');
+        const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+        const browserPrefersSpanish = languages.some((value) => /^es(?:-|$)/i.test(value || ''));
+        const preferred = saved || (browserPrefersSpanish ? 'es' : 'en');
+        if (preferred === 'es') {
+          window.location.replace('/es/' + window.location.search + window.location.hash);
+        }
+      } catch {}
+    })();
+  </script>
+
   <!-- Primary meta -->
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="author" content="JozeDzn" />
   <meta name="robots" content={robots} />
   <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="en" href={englishUrl} />
+  <link rel="alternate" hreflang="es-MX" href={spanishUrl} />
+  <link rel="alternate" hreflang="x-default" href={englishUrl} />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -69,9 +129,9 @@ const allSchemas = [personSchema, ...extraSchemas];
   <meta property="og:image" content={ogImageFull} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="JozeDzn portfolio — Creative Developer" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="es_MX" />
+  <meta property="og:image:alt" content={ogImageAlt || (isSpanish ? 'Portafolio de JozeDzn — Artista 3D y Motion Designer' : 'JozeDzn portfolio — 3D Artist and Motion Designer')} />
+  <meta property="og:locale" content={ogLocale} />
+  <meta property="og:locale:alternate" content={ogLocaleAlternate} />
 
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -135,6 +195,7 @@ const allSchemas = [personSchema, ...extraSchemas];
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">{isSpanish ? 'Saltar al contenido' : 'Skip to content'}</a>
   <!-- Loader — visible immediately, before React hydrates -->
   <div id="loader">
     <div id="loader-inner">

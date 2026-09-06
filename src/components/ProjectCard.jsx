@@ -1,5 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fetchVimeoThumbnail, vimeoPreviewSrc } from '../utils/vimeo';
+import { shouldReduceMotion } from '../utils/motion';
 
 /**
  * Comportamiento:
@@ -16,6 +18,7 @@ function initialPoster(project) {
 }
 
 export default function ProjectCard({ project }) {
+  const { t, i18n } = useTranslation();
   const rootRef = useRef(null);
   const videoRef = useRef(null);
   const [hover, setHover] = useState(false);
@@ -71,6 +74,7 @@ export default function ProjectCard({ project }) {
 
   const handleMouseEnter = () => {
     if (isTouchDevice) return;
+    if (shouldReduceMotion()) return;
     setHover(true);
     if (hasLocalVideo) {
       videoRef.current?.play().catch(() => {});
@@ -99,12 +103,16 @@ export default function ProjectCard({ project }) {
     (hasLocalVideo && hover && localReady) ||
     (vimeoOnlyPreview && vimeoActive && vimeoReady);
 
+  const localizedHref = `${i18n.language.startsWith('es') ? '/es' : ''}/work/${project.slug}`;
+  const categoryLabel = t(`work.categories.${project.categoryId}`, project.category);
+
   return (
     <a
-      href={`/work/${project.slug}`}
+      href={localizedHref}
       className={`project-card${hover ? ' project-card--hover' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      aria-label={`${t('work.view_project')}: ${project.name}`}
     >
       <span ref={rootRef} className="project-card__io-target" aria-hidden />
 
@@ -153,12 +161,14 @@ export default function ProjectCard({ project }) {
 
       <div className="project-card__hover-overlay" aria-hidden />
 
+      {project.wip && <span className="project-card__status">WIP</span>}
+
       <div className="project-card__info">
         <div className="project-card__meta">
           <p className="project-card__name">{project.name}</p>
-          <p className="project-card__category">{project.category}</p>
+          <p className="project-card__category">{categoryLabel}{project.wip ? ` · ${t('work.wip')}` : ''}</p>
         </div>
-        <span className="project-card__cta">→ View Project</span>
+        <span className="project-card__cta">→ {t('work.view_project')}</span>
       </div>
     </a>
   );
